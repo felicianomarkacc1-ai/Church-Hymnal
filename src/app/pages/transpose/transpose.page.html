@@ -9,37 +9,48 @@
 
 <ion-content [fullscreen]="true" class="transpose-content">
   <div class="transpose-shell">
+    <section class="transpose-hero">
+      <p class="eyebrow">Chord transposer</p>
+      <h2>Move chords up or down with ease</h2>
+      <p>Paste a chord chart, shift the key, and keep your worship set looking polished in either theme.</p>
+    </section>
+
     <div class="transpose-panel">
       <div class="transpose-panel-heading">
         <h4>Transpose chords</h4>
         <p>Enter a title, paste chord text, and transpose by semitones.</p>
       </div>
 
-      <input
-        class="transpose-title-input"
-        [(ngModel)]="transposeTitle"
-        placeholder="Song title"
-        aria-label="Transpose title"
-      />
+      <div class="transpose-controls">
+        <input
+          class="transpose-title-input"
+          [(ngModel)]="transposeTitle"
+          placeholder="Song title"
+          aria-label="Transpose title"
+        />
 
-      <textarea
-        class="transpose-input"
-        [(ngModel)]="transposeInput"
-        placeholder="Type chords here, e.g. B D#m G F#\nOr paste Tagalog / English chord lines"
-        rows="4"
-      ></textarea>
+        <textarea
+          class="transpose-input"
+          [(ngModel)]="transposeInput"
+          placeholder="Type chords here, e.g. B D#m G F#\nOr paste Tagalog / English chord lines"
+          rows="5"
+        ></textarea>
+      </div>
 
       <div class="transpose-buttons">
-        <ion-button fill="clear" size="small" (click)="decreaseTranspose()">-</ion-button>
-        <span class="transpose-status">{{ transposeLabel }}</span>
-        <ion-button fill="clear" size="small" (click)="increaseTranspose()">+</ion-button>
-        <ion-button fill="clear" size="small" (click)="resetTranspose()">RESET</ion-button>
-        <ion-button fill="solid" size="small" (click)="saveTranspose()">SAVE</ion-button>
+        <ion-button fill="outline" size="small" class="step-btn" (click)="decreaseTranspose()">−</ion-button>
+        <div class="transpose-pill">
+          <span class="transpose-pill-label">Key</span>
+          <span class="transpose-status">{{ transposeLabel }}</span>
+        </div>
+        <ion-button fill="outline" size="small" class="step-btn" (click)="increaseTranspose()">+</ion-button>
+        <ion-button fill="clear" size="small" class="action-btn" (click)="resetTranspose()">Reset</ion-button>
+        <ion-button fill="solid" size="small" class="action-btn save-btn" (click)="saveTranspose()">Save</ion-button>
       </div>
 
       <div class="transpose-result">
-        <strong>Result:</strong>
-        <pre>{{ transposeOutput }}</pre>
+        <div class="result-head">Result preview</div>
+        <pre>{{ transposeOutput || 'Your transposed chords will appear here.' }}</pre>
       </div>
     </div>
 

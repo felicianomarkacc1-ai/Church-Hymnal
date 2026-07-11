@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:wght@400;600;700&display=swap');
+
 /* Global Styles for Hymn Presenter */
 
 // ---------------------------------------------
@@ -33,6 +35,38 @@
 
   --app-transition-fast: 0.15s ease;
   --app-transition-base: 0.3s ease;
+
+  --hymn-paper: #fbf8f2;
+  --hymn-paper-shade: #f3ebdc;
+  --hymn-ink: #2b241d;
+  --hymn-ink-soft: #6e6252;
+  --hymn-rule: #d8ccb7;
+  --hymn-maroon: #7c2e2e;
+  --hymn-maroon-shade: #631f1f;
+  --hymn-gold: #a9813e;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: 'Source Serif 4', Georgia, serif;
+  --hymn-transition: 0.18s ease;
+
+  --ion-background-color: var(--app-bg);
+  --ion-background-color-rgb: 244, 244, 244;
+  --ion-text-color: var(--app-text);
+  --ion-text-color-rgb: 26, 26, 26;
+  --ion-border-color: var(--app-border);
+  --ion-toolbar-background: var(--app-toolbar-bg);
+  --ion-toolbar-color: var(--app-toolbar-text);
+  --ion-item-background: var(--app-card-bg);
+  --ion-card-background: var(--app-card-bg);
+
+  --stage-bg: #f7efe0;
+  --stage-bg-edge: #e3d5bc;
+  --stage-text: #2b241d;
+  --stage-text-soft: #6e6252;
+  --stage-accent: #a9813e;
+  --stage-rule: rgba(43, 36, 29, 0.12);
+  --stage-glow: rgba(169, 129, 62, 0.08);
+  --stage-surface: rgba(255, 255, 255, 0.42);
+  --stage-surface-alt: rgba(255, 255, 255, 0.24);
 }
 
 body.light {
@@ -49,22 +83,45 @@ body.light {
   --app-card-bg: #ffffff;
   --app-scrollbar-thumb: #ccc;
   --app-scrollbar-thumb-hover: #999;
+
+  background: linear-gradient(135deg, #f4f4f4 0%, #f8efe0 100%);
 }
 
 body.dark {
-  --app-bg: #0f1115;
-  --app-surface-bg: #14181f;
-  --app-surface-alt-bg: #191e27;
-  --app-text: #f5f6f8;
-  --app-text-muted: #b3b8c4;
-  --app-border: #2a2f3d;
-  --app-toolbar-bg: #11151d;
-  --app-toolbar-text: #f5f6f8;
-  --app-input-bg: #1d2431;
-  --app-input-text: #f5f6f8;
-  --app-card-bg: #171d28;
-  --app-scrollbar-thumb: #4a5362;
-  --app-scrollbar-thumb-hover: #6f7b93;
+  --app-bg: #0a0d12;
+  --app-surface-bg: #151a24;
+  --app-surface-alt-bg: #1d2430;
+  --app-text: #f8f3e8;
+  --app-text-muted: #b8c0cd;
+  --app-border: #4d5768;
+  --app-toolbar-bg: #11161f;
+  --app-toolbar-text: #f8f3e8;
+  --app-input-bg: #202736;
+  --app-input-text: #f8f3e8;
+  --app-card-bg: #1b2230;
+  --app-scrollbar-thumb: #5e6a7d;
+  --app-scrollbar-thumb-hover: #7c8aa0;
+
+  --hymn-paper: #171c25;
+  --hymn-paper-shade: #232b39;
+  --hymn-ink: #f8f3e8;
+  --hymn-ink-soft: #c2cbd6;
+  --hymn-rule: #4f5b6d;
+  --hymn-maroon: #e2b0a8;
+  --hymn-maroon-shade: #c48172;
+  --hymn-gold: #f0c96b;
+
+  --ion-background-color: #12161f;
+  --ion-background-color-rgb: 18, 22, 31;
+  --ion-text-color: #f8f3e8;
+  --ion-text-color-rgb: 248, 243, 232;
+  --ion-border-color: #4f5b6d;
+  --ion-toolbar-background: #161c28;
+  --ion-toolbar-color: #f8f3e8;
+  --ion-item-background: #1c2332;
+  --ion-card-background: #1c2332;
+
+  background: linear-gradient(140deg, #0a0d12 0%, #151a24 55%, #0e131a 100%);
 }
 
 // Dark mode: respects system preference. Ionic's own dark-mode class
@@ -105,6 +162,7 @@ body {
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   transition: background var(--app-transition-base), color var(--app-transition-base);
+  background-attachment: fixed;
 }
 
 app-root {
@@ -175,6 +233,17 @@ ion-toolbar {
   --color: var(--app-toolbar-text);
 }
 
+.hymn-header ion-toolbar {
+  --background: var(--hymn-paper);
+  --color: var(--hymn-ink);
+  --border-color: var(--hymn-rule);
+}
+
+.hymn-header ion-toolbar ion-button,
+.hymn-header ion-toolbar ion-back-button {
+  --color: var(--hymn-ink);
+}
+
 ion-input,
 ion-textarea,
 ion-select,
@@ -182,6 +251,23 @@ ion-searchbar {
   --background: var(--app-input-bg);
   --color: var(--app-input-text);
   --border-color: var(--app-border);
+  --placeholder-color: var(--app-text-muted);
+}
+
+ion-button {
+  --color: var(--ion-text-color);
+}
+
+ion-button[fill="outline"] {
+  --border-color: var(--ion-border-color);
+}
+
+ion-content,
+ion-toolbar,
+ion-item,
+ion-card {
+  --background: var(--app-card-bg);
+  --color: var(--app-text);
 }
 
 // ---------------------------------------------

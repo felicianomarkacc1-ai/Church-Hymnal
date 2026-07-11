@@ -133,9 +133,9 @@
 }
 
 ion-toolbar {
-  --background: #fff;
-  --border-color: #e0e0e0;
-  --color: #333;
+  --background: var(--ion-toolbar-background, #fff);
+  --border-color: var(--ion-border-color, #e0e0e0);
+  --color: var(--ion-toolbar-color, #333);
 }
 
 ion-header {

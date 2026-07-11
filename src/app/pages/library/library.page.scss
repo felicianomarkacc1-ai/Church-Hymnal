@@ -1,24 +1,4 @@
-// Same manuscript identity as the hymn editor page. If you haven't already,
-// move this @import and the --hymn-* token block into your global theme.scss
-// so every page shares one copy instead of redeclaring it per component.
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
-
-:host {
-  --hymn-paper: var(--app-surface-bg, #faf6ec);
-  --hymn-paper-shade: var(--app-surface-alt-bg, #f1ead9);
-  --hymn-ink: var(--app-text, #2b241d);
-  --hymn-ink-soft: var(--app-text-muted, #6e6252);
-  --hymn-rule: var(--app-border, #ded1b8);
-  --hymn-maroon: #7c2e2e;
-  --hymn-maroon-shade: #631f1f;
-  --hymn-gold: #a9813e;
-  --hymn-danger: #9a3b3b;
-
-  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --hymn-font-body: 'Source Serif 4', Georgia, serif;
-
-  display: block;
-}
+// Component-specific styles only. Shared fonts and CSS tokens are defined in src/styles.scss
 
 .hymn-header ion-toolbar {
   --background: var(--hymn-paper);
@@ -67,20 +47,24 @@
 // Frontispiece — the title page of the index, not a gradient promo card
 // ---------------------------------------------
 .frontispiece {
-  padding: 22px 0 20px;
-  border-bottom: 2px solid var(--hymn-ink);
-  margin-bottom: 20px;
+  padding: 24px 20px 22px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 22px;
+  margin-bottom: 18px;
   position: relative;
   text-align: center;
+  background: linear-gradient(135deg, var(--hymn-paper-shade) 0%, var(--hymn-paper) 100%);
+  box-shadow: 0 12px 30px rgba(43, 36, 29, 0.06);
+  backdrop-filter: blur(6px);
 
   &::after {
     content: '';
     position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 100%;
+    left: 20px;
+    right: 20px;
+    bottom: 12px;
     height: 1px;
-    background: var(--hymn-rule);
+    background: linear-gradient(90deg, transparent, var(--hymn-rule), transparent);
   }
 }
 
@@ -90,19 +74,23 @@
   flex-wrap: wrap;
   gap: 10px;
   width: 100%;
-  padding: 0 12px;
-  margin: 12px auto 0;
+  padding: 0 6px;
+  margin: 14px auto 0;
 }
 
 .language-switcher ion-button {
   min-width: 110px;
   flex: 1 1 140px;
   --border-radius: 999px;
+  --background: var(--hymn-paper);
+  --color: var(--hymn-ink);
+  --border-color: var(--hymn-rule);
 }
 
 .language-switcher ion-button.active {
   --background: var(--hymn-maroon);
-  --color: #fff;
+  --color: var(--hymn-paper);
+  --border-color: var(--hymn-maroon);
 }
 
 .eyebrow {
@@ -304,8 +292,13 @@
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  align-items: stretch;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 18px;
+  background: var(--hymn-paper);
+  box-shadow: 0 8px 24px rgba(43, 36, 29, 0.05);
 }
 
 .hymn-search {
@@ -316,10 +309,10 @@
   --color: var(--hymn-ink);
   --placeholder-color: var(--hymn-ink-soft);
   --icon-color: var(--hymn-ink-soft);
-  --border-radius: 6px;
+  --border-radius: 12px;
   --box-shadow: none;
   border: 1px solid var(--hymn-rule);
-  border-radius: 6px;
+  border-radius: 12px;
   font-family: var(--hymn-font-body);
 }
 
@@ -399,8 +392,9 @@
   padding: 28px 20px;
   text-align: center;
   border: 1px dashed var(--hymn-rule);
-  border-radius: 8px;
-  background: var(--hymn-paper-shade);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--hymn-paper-shade), var(--hymn-paper));
+  box-shadow: inset 0 1px 0 rgba(43, 36, 29, 0.08);
 
   .empty-mark {
     display: block;
@@ -439,11 +433,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid var(--hymn-rule);
-
-  &:first-child {
-    border-top: 1px solid var(--hymn-rule);
-  }
+  margin-bottom: 10px;
+  padding: 2px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 14px;
+  background: var(--hymn-paper);
+  box-shadow: 0 6px 16px rgba(43, 36, 29, 0.04);
 }
 
 .hymn-row-main {
@@ -452,13 +447,13 @@
   align-items: center;
   gap: 16px;
   min-width: 0;
-  padding: 14px 8px;
+  padding: 14px 12px;
   border: none;
   background: transparent;
   text-align: left;
   cursor: pointer;
   transition: background-color var(--hymn-transition, 0.15s ease);
-  border-radius: 4px;
+  border-radius: 12px;
 
   &:hover,
   &:focus-visible {
@@ -537,7 +532,7 @@
   --background-hover: var(--hymn-maroon-shade);
   --background-activated: var(--hymn-maroon-shade);
   --color: #fff;
-  --box-shadow: 0 4px 14px rgba(43, 36, 29, 0.25);
+  --box-shadow: 0 10px 24px rgba(124, 46, 46, 0.28);
 }
 
 // ---------------------------------------------

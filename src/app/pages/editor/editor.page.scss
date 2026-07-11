@@ -1,26 +1,4 @@
-// Fonts for the manuscript identity. For production, move this @import (or the
-// equivalent <link> tags) into index.html so it's fetched once, globally, instead
-// of per-component.
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
-
-// ---------------------------------------------
-// Local design tokens — a hymnal page, not a form
-// ---------------------------------------------
-:host {
-  --hymn-paper: var(--app-surface-bg, #faf6ec);
-  --hymn-paper-shade: var(--app-surface-alt-bg, #f1ead9);
-  --hymn-ink: var(--app-text, #2b241d);
-  --hymn-ink-soft: var(--app-text-muted, #6e6252);
-  --hymn-rule: var(--app-border, #ded1b8);
-  --hymn-maroon: #7c2e2e;
-  --hymn-maroon-shade: #631f1f;
-  --hymn-gold: #a9813e;
-
-  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --hymn-font-body: 'Source Serif 4', Georgia, serif;
-
-  display: block;
-}
+// Component-specific styles only. Shared fonts and CSS tokens are defined in src/styles.scss
 
 .hymn-header ion-toolbar {
   --background: var(--hymn-paper);
@@ -68,10 +46,10 @@
   gap: 18px;
   padding: 22px 20px;
   margin-bottom: 28px;
-  background: var(--hymn-paper);
+  background: linear-gradient(135deg, var(--hymn-paper-shade) 0%, var(--hymn-paper) 100%);
   border: 1px solid var(--hymn-rule);
-  border-radius: 4px;
-  box-shadow: 0 1px 0 rgba(43, 36, 29, 0.04);
+  border-radius: 20px;
+  box-shadow: 0 12px 28px rgba(43, 36, 29, 0.06);
   animation: plateIn 0.4s ease-out;
 }
 
@@ -99,11 +77,12 @@
   justify-content: center;
   flex: 0 0 auto;
   min-width: 84px;
-  padding: 6px 8px;
+  padding: 8px 10px;
   border: 1.5px solid var(--hymn-maroon);
-  border-radius: 3px;
+  border-radius: 8px;
   transform: rotate(-1deg);
   position: relative;
+  background: var(--hymn-paper-shade);
 
   &::after {
     // faint letterpress ring, suggests a stamped plate rather than a flat box
@@ -165,6 +144,22 @@
   flex-direction: column;
   justify-content: center;
   min-width: 0;
+}
+
+.plate-language {
+  display: flex;
+  align-items: center;
+}
+
+.plate-language select {
+  min-width: 120px;
+  padding: 8px 10px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 999px;
+  background: var(--app-input-bg);
+  color: var(--hymn-ink);
+  font-family: var(--hymn-font-body);
+  font-size: 0.95rem;
 }
 
 .plate-title-input {
@@ -233,8 +228,9 @@
 .lyrics-frame {
   background: var(--hymn-paper);
   border: 1px solid var(--hymn-rule);
-  border-radius: 4px;
+  border-radius: 14px;
   padding: 4px;
+  box-shadow: inset 0 1px 0 rgba(248, 243, 232, 0.08);
 }
 
 .lyrics-input {
@@ -310,8 +306,8 @@
   --background-hover: var(--hymn-maroon-shade);
   --background-activated: var(--hymn-maroon-shade);
   --color: #fff;
-  --border-radius: 6px;
-  --box-shadow: none;
+  --border-radius: 999px;
+  --box-shadow: 0 8px 20px rgba(124, 46, 46, 0.16);
   font-family: var(--hymn-font-display);
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -321,6 +317,7 @@
 .cancel-btn {
   --color: var(--hymn-ink-soft);
   font-family: var(--hymn-font-body);
+  --border-radius: 999px;
 }
 
 // ---------------------------------------------

@@ -1,0 +1,556 @@
+// Same manuscript identity as the hymn editor page. If you haven't already,
+// move this @import and the --hymn-* token block into your global theme.scss
+// so every page shares one copy instead of redeclaring it per component.
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
+
+:host {
+  --hymn-paper: var(--app-surface-bg, #faf6ec);
+  --hymn-paper-shade: var(--app-surface-alt-bg, #f1ead9);
+  --hymn-ink: var(--app-text, #2b241d);
+  --hymn-ink-soft: var(--app-text-muted, #6e6252);
+  --hymn-rule: var(--app-border, #ded1b8);
+  --hymn-maroon: #7c2e2e;
+  --hymn-maroon-shade: #631f1f;
+  --hymn-gold: #a9813e;
+  --hymn-danger: #9a3b3b;
+
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: 'Source Serif 4', Georgia, serif;
+
+  display: block;
+}
+
+.hymn-header ion-toolbar {
+  --background: var(--hymn-paper);
+  --color: var(--hymn-ink);
+  --border-color: var(--hymn-rule);
+  font-family: var(--hymn-font-display);
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.hymn-header ion-buttons {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hymn-header ion-title {
+  font-family: var(--hymn-font-display);
+  font-weight: 700;
+  text-align: center;
+  max-width: calc(100% - 88px);
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  letter-spacing: 0.02em;
+}
+
+.library-content {
+  --background: var(--hymn-paper);
+}
+
+// ---------------------------------------------
+// Page shell
+// ---------------------------------------------
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4px 20px 100px;
+}
+
+// ---------------------------------------------
+// Frontispiece — the title page of the index, not a gradient promo card
+// ---------------------------------------------
+.frontispiece {
+  padding: 22px 0 20px;
+  border-bottom: 2px solid var(--hymn-ink);
+  margin-bottom: 20px;
+  position: relative;
+  text-align: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 1px;
+    background: var(--hymn-rule);
+  }
+}
+
+.language-switcher {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  padding: 0 12px;
+  margin: 12px auto 0;
+}
+
+.language-switcher ion-button {
+  min-width: 110px;
+  flex: 1 1 140px;
+  --border-radius: 999px;
+}
+
+.language-switcher ion-button.active {
+  --background: var(--hymn-maroon);
+  --color: #fff;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-family: var(--hymn-font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: var(--hymn-maroon);
+}
+
+.frontispiece h2,
+.frontispiece h3 {
+  margin: 0 0 14px;
+  font-family: var(--hymn-font-display);
+  font-weight: 500;
+  font-size: 1.85rem;
+  line-height: 1.4;
+  color: var(--hymn-ink-soft);
+  text-align: center;
+}
+
+.frontispiece h3 {
+  font-style: italic;
+  letter-spacing: 0.01em;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.transpose-control-panel {
+  margin: 18px auto 0;
+  padding: 14px 16px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 14px;
+  background: var(--hymn-paper);
+  color: var(--hymn-ink);
+  max-width: 720px;
+  text-align: center;
+}
+
+.transpose-panel-heading {
+  margin-bottom: 12px;
+}
+
+.transpose-panel-heading h4 {
+  margin: 0;
+  font-family: var(--hymn-font-display);
+  font-size: 1.05rem;
+}
+
+.transpose-panel-heading p {
+  margin: 4px auto 0;
+  max-width: 44rem;
+  color: var(--hymn-ink-soft);
+  font-size: 0.92rem;
+}
+
+.transpose-title-input,
+.transpose-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: var(--hymn-font-display);
+  font-size: 0.96rem;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 12px;
+  background: var(--app-input-bg);
+  color: var(--app-input-text);
+}
+
+.transpose-input {
+  min-height: 52px;
+  margin: 10px 0 12px;
+  resize: vertical;
+}
+
+.transpose-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.saved-transposes {
+  margin-top: 18px;
+  text-align: left;
+}
+
+.saved-transposes h5 {
+  margin: 0 0 10px;
+  font-family: var(--hymn-font-display);
+  font-size: 1rem;
+}
+
+.saved-transposes ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.saved-entry {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 10px;
+  background: var(--hymn-paper-shade);
+  color: var(--hymn-ink);
+  font-size: 0.92rem;
+}
+
+.saved-entry-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.saved-entry-title {
+  font-family: var(--hymn-font-display);
+  font-weight: 600;
+}
+
+.saved-entry-meta {
+  color: var(--hymn-ink-soft);
+}
+
+.saved-entry pre {
+  margin: 4px 0 0;
+  padding: 8px;
+  background: var(--app-surface-alt-bg);
+  border: 1px solid var(--hymn-rule);
+  border-radius: 8px;
+  color: var(--app-input-text);
+  font-size: 0.84rem;
+  line-height: 1.35;
+  max-height: 5.2rem;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.saved-entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.saved-delete {
+  --color: var(--hymn-maroon);
+}
+
+.transpose-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  font-family: var(--hymn-font-display);
+  font-weight: 600;
+  color: var(--hymn-maroon);
+}
+
+.transpose-result {
+  font-family: var(--hymn-font-body);
+  color: var(--hymn-ink-soft);
+  font-size: 0.95rem;
+  max-width: 100%;
+  word-break: break-word;
+  text-align: left;
+}
+
+.transpose-result pre {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  background: var(--hymn-paper-shade);
+  border: 1px solid var(--hymn-rule);
+  border-radius: 10px;
+  color: var(--hymn-ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lede {
+  margin: 0 auto;
+  font-family: var(--hymn-font-body);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--hymn-ink-soft);
+  max-width: 50ch;
+  text-align: center;
+}
+
+// ---------------------------------------------
+// Search + import/export
+// ---------------------------------------------
+.toolbelt {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hymn-search {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  --background: var(--app-input-bg);
+  --color: var(--hymn-ink);
+  --placeholder-color: var(--hymn-ink-soft);
+  --icon-color: var(--hymn-ink-soft);
+  --border-radius: 6px;
+  --box-shadow: none;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 6px;
+  font-family: var(--hymn-font-body);
+}
+
+.io-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.import-help {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  color: var(--hymn-ink-soft);
+  max-width: 100%;
+  width: min(100%, 420px);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 4px 14px 90px;
+  }
+
+  .frontispiece {
+    padding: 18px 0 18px;
+    margin-bottom: 16px;
+  }
+
+  .frontispiece h2,
+  .frontispiece h3 {
+    font-size: 1.8rem;
+  }
+
+  .language-switcher {
+    gap: 8px;
+    padding: 0 8px;
+    margin: 10px auto 0;
+  }
+
+  .language-switcher ion-button {
+    min-width: calc(50% - 10px);
+    flex: 1 1 calc(50% - 10px);
+  }
+
+  .toolbelt {
+    gap: 6px;
+  }
+
+  .io-actions {
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .import-help {
+    margin: 6px 0 0;
+    padding: 0 6px;
+  }
+}
+
+.io-btn {
+  --color: var(--hymn-maroon);
+  --border-color: var(--hymn-rule);
+  --border-radius: 6px;
+  font-family: var(--hymn-font-body);
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+// ---------------------------------------------
+// Empty state
+// ---------------------------------------------
+.empty-state {
+  margin: 32px 0;
+  padding: 28px 20px;
+  text-align: center;
+  border: 1px dashed var(--hymn-rule);
+  border-radius: 8px;
+  background: var(--hymn-paper-shade);
+
+  .empty-mark {
+    display: block;
+    font-size: 1.6rem;
+    color: var(--hymn-gold);
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-family: var(--hymn-font-display);
+    font-weight: 600;
+    color: var(--hymn-ink);
+  }
+
+  p {
+    margin: 0 auto;
+    max-width: 40ch;
+    font-family: var(--hymn-font-body);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--hymn-ink-soft);
+  }
+}
+
+// ---------------------------------------------
+// Hymn index — a printed index, not a stack of cards
+// ---------------------------------------------
+.hymn-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hymn-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--hymn-rule);
+
+  &:first-child {
+    border-top: 1px solid var(--hymn-rule);
+  }
+}
+
+.hymn-row-main {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 14px 8px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--hymn-transition, 0.15s ease);
+  border-radius: 4px;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--hymn-paper-shade);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--hymn-gold);
+    outline-offset: -2px;
+  }
+}
+
+.hymn-row-number {
+  flex: 0 0 auto;
+  min-width: 2.4ch;
+  font-family: var(--hymn-font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--hymn-maroon);
+  text-align: right;
+}
+
+.hymn-row-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hymn-row-title {
+  font-family: var(--hymn-font-body);
+  font-size: 1rem;
+  color: var(--hymn-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hymn-row-meta {
+  font-family: var(--hymn-font-body);
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--hymn-ink-soft);
+  margin-top: 2px;
+}
+
+.hymn-row-actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 2px;
+}
+
+.row-action {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 40px;
+
+  &.edit {
+    --color: var(--hymn-ink-soft);
+  }
+
+  &.delete {
+    --color: var(--hymn-danger);
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// ---------------------------------------------
+// FAB
+// ---------------------------------------------
+.hymn-fab {
+  --background: var(--hymn-maroon);
+  --background-hover: var(--hymn-maroon-shade);
+  --background-activated: var(--hymn-maroon-shade);
+  --color: #fff;
+  --box-shadow: 0 4px 14px rgba(43, 36, 29, 0.25);
+}
+
+// ---------------------------------------------
+// Small screens
+// ---------------------------------------------
+@media (max-width: 400px) {
+  .hymn-row-main {
+    gap: 10px;
+    padding: 12px 4px;
+  }
+
+  .hymn-row-number {
+    min-width: 2ch;
+    font-size: 1rem;
+  }
+}
