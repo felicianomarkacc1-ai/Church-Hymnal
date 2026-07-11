@@ -1,0 +1,147 @@
+:host {
+  --hymn-paper: var(--app-surface-bg, #faf6ec);
+  --hymn-paper-shade: var(--app-surface-alt-bg, #f1ead9);
+  --hymn-ink: var(--app-text, #2b241d);
+  --hymn-ink-soft: var(--app-text-muted, #6e6252);
+  --hymn-rule: var(--app-border, #ded1b8);
+  display: block;
+}
+
+.transpose-content {
+  --background: var(--hymn-paper);
+}
+
+.transpose-shell {
+  max-width: 720px;
+  margin: 24px auto 40px;
+  padding: 0 16px;
+}
+
+.transpose-panel {
+  padding: 18px 18px 14px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 16px;
+  background: var(--hymn-paper);
+  text-align: center;
+}
+
+.transpose-panel-heading {
+  margin-bottom: 12px;
+}
+
+.transpose-panel-heading h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.transpose-panel-heading p {
+  margin: 6px auto 0;
+  color: var(--hymn-ink-soft);
+  font-size: 0.92rem;
+}
+
+.transpose-title-input,
+.transpose-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 12px;
+  background: var(--app-input-bg);
+  color: var(--app-input-text);
+}
+
+.transpose-input {
+  min-height: 92px;
+  margin: 10px 0 12px;
+  resize: vertical;
+}
+
+.transpose-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.transpose-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  font-weight: 600;
+  color: var(--hymn-ink);
+}
+
+.transpose-result {
+  text-align: left;
+}
+
+.transpose-result pre {
+  margin: 8px 0 0;
+  padding: 12px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 10px;
+  background: var(--hymn-paper-shade);
+  color: var(--hymn-ink);
+  white-space: pre-wrap;
+}
+
+.saved-transposes {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.saved-transposes h5 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.saved-entry {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 12px;
+  background: var(--hymn-paper-shade);
+}
+
+.saved-entry-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.saved-entry-title {
+  font-weight: 700;
+}
+
+.saved-entry-meta {
+  color: var(--hymn-ink-soft);
+}
+
+.saved-entry pre {
+  margin: 6px 0 0;
+  padding: 8px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 10px;
+  max-height: 5.2rem;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.saved-entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.saved-delete {
+  --color: var(--hymn-maroon);
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Hymn Presenter",
+  "short_name": "Hymn Presenter",
+  "description": "A browser-based hymn presenter for church services",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait"
+}

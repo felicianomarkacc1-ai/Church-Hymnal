@@ -1,0 +1,93 @@
+<ion-header [translucent]="true" class="hymn-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/library" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isNew ? 'New Hymn' : 'Edit Hymn' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveHymn()" fill="clear" class="save-action" aria-label="Save hymn">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="hymn-editor-content">
+  <div class="manuscript">
+
+    <!-- Title plate: styled like the printed plate at the top of a hymnal page -->
+    <div class="plate">
+      <div class="plate-number">
+        <label for="hymnNumber" class="sr-only">Hymn number</label>
+        <span class="plate-number-label">No.</span>
+        <input
+          id="hymnNumber"
+          class="plate-number-input"
+          type="number"
+          inputmode="numeric"
+          [(ngModel)]="hymnNumber"
+          placeholder="—"
+        />
+      </div>
+
+      <div class="plate-divider" aria-hidden="true"></div>
+
+      <div class="plate-title">
+        <label for="hymnTitle" class="sr-only">Hymn title</label>
+        <input
+          id="hymnTitle"
+          class="plate-title-input"
+          type="text"
+          [(ngModel)]="hymnTitle"
+          placeholder="Untitled hymn"
+        />
+        <span class="plate-caption">{{ isNew ? 'Creating a new entry' : 'Editing this entry' }}</span>
+      </div>
+
+      <div class="plate-language">
+        <label for="hymnLanguage" class="sr-only">Hymn language</label>
+        <select id="hymnLanguage" [(ngModel)]="hymnLanguage">
+          <option value="english">English</option>
+          <option value="tagalog">Tagalog</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Lyrics manuscript -->
+    <div class="lyrics-block">
+      <div class="lyrics-heading">
+        <span class="eyebrow">Lyrics &amp; sections</span>
+        <span class="section-badge" *ngIf="sectionCount > 0">
+          {{ sectionCount }} section{{ sectionCount === 1 ? '' : 's' }}
+        </span>
+      </div>
+
+      <div class="lyrics-frame">
+        <ion-textarea
+          class="lyrics-input"
+          [(ngModel)]="hymnLyrics"
+          placeholder="[Verse 1]&#10;Amazing grace, how sweet the sound...&#10;&#10;[Chorus]&#10;..."
+          rows="16"
+          autoGrow="true"
+        ></ion-textarea>
+      </div>
+
+      <div class="marginalia">
+        <span class="marginalia-mark" aria-hidden="true">✎</span>
+        <p>
+          Tag each block with <code>[Verse 2]</code>, <code>[Chorus]</code>, <code>[Bridge]</code>,
+          or <code>[Outro]</code> — every tagged block becomes its own slide.
+        </p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <ion-button expand="block" (click)="saveHymn()" class="save-btn">
+        Save Hymn
+      </ion-button>
+      <ion-button expand="block" fill="clear" (click)="cancel()" class="cancel-btn">
+        Cancel
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

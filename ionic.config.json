@@ -1,0 +1,16 @@
+{
+  "name": "hymn-presenter",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "projects": {
+    "app": {
+      "name": "hymn-presenter",
+      "integrations": {
+        "capacitor": {}
+      },
+      "cordova": {}
+    }
+  }
+}

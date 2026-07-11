@@ -1,0 +1,63 @@
+<ion-header [translucent]="true" class="hymn-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/library" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Transpose</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="transpose-content">
+  <div class="transpose-shell">
+    <div class="transpose-panel">
+      <div class="transpose-panel-heading">
+        <h4>Transpose chords</h4>
+        <p>Enter a title, paste chord text, and transpose by semitones.</p>
+      </div>
+
+      <input
+        class="transpose-title-input"
+        [(ngModel)]="transposeTitle"
+        placeholder="Song title"
+        aria-label="Transpose title"
+      />
+
+      <textarea
+        class="transpose-input"
+        [(ngModel)]="transposeInput"
+        placeholder="Type chords here, e.g. B D#m G F#\nOr paste Tagalog / English chord lines"
+        rows="4"
+      ></textarea>
+
+      <div class="transpose-buttons">
+        <ion-button fill="clear" size="small" (click)="decreaseTranspose()">-</ion-button>
+        <span class="transpose-status">{{ transposeLabel }}</span>
+        <ion-button fill="clear" size="small" (click)="increaseTranspose()">+</ion-button>
+        <ion-button fill="clear" size="small" (click)="resetTranspose()">RESET</ion-button>
+        <ion-button fill="solid" size="small" (click)="saveTranspose()">SAVE</ion-button>
+      </div>
+
+      <div class="transpose-result">
+        <strong>Result:</strong>
+        <pre>{{ transposeOutput }}</pre>
+      </div>
+    </div>
+
+    <div class="saved-transposes" *ngIf="savedTransposes.length > 0">
+      <h5>Saved transposes</h5>
+      <ul>
+        <li *ngFor="let saved of savedTransposes" class="saved-entry">
+          <div class="saved-entry-header">
+            <span class="saved-entry-title">{{ saved.title }}</span>
+            <span class="saved-entry-meta">{{ saved.steps > 0 ? '+' + saved.steps : saved.steps }} steps</span>
+          </div>
+          <pre>{{ saved.output }}</pre>
+          <div class="saved-entry-actions">
+            <ion-button fill="outline" size="small" (click)="loadSavedTranspose(saved)">Load</ion-button>
+            <ion-button fill="clear" size="small" class="saved-delete" (click)="deleteSavedTranspose(saved.id)">Delete</ion-button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ion-content>

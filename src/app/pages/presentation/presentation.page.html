@@ -1,0 +1,100 @@
+<ion-content
+  class="presentation-content"
+  (touchstart)="onSwipe($event)"
+  (touchend)="onSwipe($event)"
+>
+  <div class="presentation-area">
+    <div class="tap-zone tap-zone-left" (click)="onLeftSideTap($event)"></div>
+    <div class="tap-zone tap-zone-right" (click)="onRightSideTap($event)"></div>
+
+    <ion-button
+      fill="clear"
+      color="light"
+      class="presentation-back-btn"
+      (click)="exitPresentation()"
+      aria-label="Back to library"
+    >
+      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+    </ion-button>
+
+    <ion-button
+      fill="clear"
+      color="light"
+      class="side-nav-btn side-nav-btn-left"
+      (click)="previousSection()"
+      [disabled]="currentSectionIndex === 0"
+      aria-label="Previous section"
+    >
+      <ion-icon name="chevron-back"></ion-icon>
+    </ion-button>
+
+    <ion-button
+      fill="clear"
+      color="light"
+      class="side-nav-btn side-nav-btn-right"
+      (click)="nextSection()"
+      [disabled]="!hymn || currentSectionIndex >= hymn.sections.length - 1"
+      aria-label="Next section"
+    >
+      <ion-icon name="chevron-forward"></ion-icon>
+    </ion-button>
+
+    <div class="stage-tag">
+      <span class="stage-tag-number">No. {{ hymn?.number }}</span>
+      <span class="stage-tag-title">{{ hymn?.title }}</span>
+    </div>
+
+    <div class="presentation-main" [ngClass]="getFontSizeClass()">
+      <p class="section-label">{{ getSectionLabel() }}</p>
+      <div class="lyrics-text">
+        {{ getCurrentSection()?.text || 'No lyrics available yet.' }}
+      </div>
+    </div>
+
+    <!-- Always-visible bottom cluster: progress dots + quick-jump chips.
+         Sits above the tap zones and keeps font controls always accessible. -->
+    <div class="bottom-cluster" (click)="$event.stopPropagation()">
+      <div class="progress-dots" *ngIf="hymn && hymn.sections.length > 1">
+        <span
+          class="dot"
+          *ngFor="let section of hymn.sections; let i = index"
+          [class.dot-active]="i === currentSectionIndex"
+        ></span>
+      </div>
+
+      <div class="quick-jump" *ngIf="quickJumpLabels.length > 0">
+        <button
+          *ngFor="let label of quickJumpLabels"
+          class="quick-jump-chip"
+          [class.quick-jump-chip-active]="getSectionLabel() === label"
+          (click)="jumpToLabel(label)"
+        >
+          {{ label }}
+        </button>
+      </div>
+
+      <div class="font-control-bottom">
+        <span>Text size</span>
+        <ion-button
+          fill="clear"
+          color="light"
+          (click)="decreaseFontSize()"
+          size="small"
+          aria-label="Decrease text size"
+        >
+          <ion-icon name="remove-outline"></ion-icon>
+        </ion-button>
+        <span class="font-value">{{ fontSize }}</span>
+        <ion-button
+          fill="clear"
+          color="light"
+          (click)="increaseFontSize()"
+          size="small"
+          aria-label="Increase text size"
+        >
+          <ion-icon name="add-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

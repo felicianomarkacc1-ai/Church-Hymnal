@@ -1,0 +1,117 @@
+<ion-header [translucent]="true" class="hymn-header">
+  <ion-toolbar>
+    <ion-title>Bantog Christian Church</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToSettings()" aria-label="Settings">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="library-content">
+  <ion-header collapse="condense" class="hymn-header">
+    <ion-toolbar>
+      <ion-title size="large">Hymn Library</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="container">
+
+    <div class="frontispiece">
+      <h3>O come, let us sing unto the LORD: let us make a joyful noise to the rock of our salvation.</h3>
+      <p class="lede">Let us come before his presence with thanksgiving, and make a joyful noise unto him with psalms.</p>
+<p class="eyebrow">Psalm 95:1-2 (KJV)</p>
+    </div>
+
+    <div class="language-switcher">
+      <ion-button
+        fill="outline"
+        size="small"
+        [class.active]="selectedLanguage === 'english'"
+        (click)="setLanguage('english')"
+      >
+        English
+      </ion-button>
+      <ion-button
+        fill="outline"
+        size="small"
+        [class.active]="selectedLanguage === 'tagalog'"
+        (click)="setLanguage('tagalog')"
+      >
+        Tagalog
+      </ion-button>
+    </div>
+<br>
+    <div class="toolbelt">
+      <ion-searchbar
+        class="hymn-search"
+        [value]="searchQuery"
+        (ionInput)="onSearchChange($event)"
+        placeholder="Search by number or title"
+        [debounce]="200"
+      ></ion-searchbar>
+
+      <div class="io-actions">
+        <ion-button (click)="exportHymns()" fill="outline" size="small" class="io-btn">
+          <ion-icon slot="start" name="download"></ion-icon>
+          Export
+        </ion-button>
+        <ion-button (click)="importHymns()" fill="outline" size="small" class="io-btn">
+          <ion-icon slot="start" name="cloud-upload"></ion-icon>
+          Import
+        </ion-button>
+        <ion-button (click)="goToTranspose()" fill="outline" size="small" class="io-btn">
+          <ion-icon slot="start" name="shuffle"></ion-icon>
+          Transpose
+        </ion-button>
+        <p class="import-help">Import a .json backup or a .txt hymn file with [Verse 1] / [Chorus] tags.</p>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredHymns.length === 0">
+      <span class="empty-mark" aria-hidden="true">♪</span>
+      <h3>No hymns yet</h3>
+      <p>Tap the + button below to add your first hymn. Extra verses go in the same lyrics box with tags.</p>
+    </div>
+
+    <ul class="hymn-index" *ngIf="filteredHymns.length > 0">
+      <li class="hymn-row" *ngFor="let hymn of filteredHymns">
+        <button class="hymn-row-main" (click)="presentHymn(hymn.id)">
+          <span class="hymn-row-number">{{ hymn.number }}</span>
+          <span class="hymn-row-text">
+            <span class="hymn-row-title">{{ hymn.title }}</span>
+            <span class="hymn-row-meta">
+              {{ hymn.sections.length }} section{{ hymn.sections.length === 1 ? '' : 's' }}
+            </span>
+          </span>
+        </button>
+
+        <div class="hymn-row-actions">
+          <ion-button
+            fill="clear"
+            class="row-action edit"
+            (click)="editHymn(hymn.id)"
+            attr.aria-label="Edit {{ hymn.title }}"
+          >
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            class="row-action delete"
+            (click)="deleteHymn(hymn.id)"
+            attr.aria-label="Delete {{ hymn.title }}"
+          >
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="addNewHymn()" class="hymn-fab" aria-label="Add new hymn">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

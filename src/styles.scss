@@ -1,0 +1,328 @@
+/* Global Styles for Hymn Presenter */
+
+// ---------------------------------------------
+// Design tokens
+// ---------------------------------------------
+:root {
+  --app-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+
+  --app-bg: #f4f4f4;
+  --app-surface-bg: #fafafa;
+  --app-surface-alt-bg: #ffffff;
+  --app-text: #1a1a1a;
+  --app-text-muted: #666;
+  --app-border: #ddd;
+  --app-toolbar-bg: #ffffff;
+  --app-toolbar-text: #1a1a1a;
+  --app-input-bg: #ffffff;
+  --app-input-text: #1a1a1a;
+  --app-card-bg: #ffffff;
+  --app-scrollbar-thumb: #ccc;
+  --app-scrollbar-thumb-hover: #999;
+
+  --app-radius-sm: 6px;
+  --app-radius-md: 10px;
+  --app-radius-lg: 16px;
+
+  --app-space-1: 4px;
+  --app-space-2: 8px;
+  --app-space-3: 16px;
+  --app-space-4: 24px;
+  --app-space-5: 32px;
+
+  --app-transition-fast: 0.15s ease;
+  --app-transition-base: 0.3s ease;
+}
+
+body.light {
+  --app-bg: #f4f4f4;
+  --app-surface-bg: #fafafa;
+  --app-surface-alt-bg: #ffffff;
+  --app-text: #1a1a1a;
+  --app-text-muted: #666;
+  --app-border: #ddd;
+  --app-toolbar-bg: #ffffff;
+  --app-toolbar-text: #1a1a1a;
+  --app-input-bg: #ffffff;
+  --app-input-text: #1a1a1a;
+  --app-card-bg: #ffffff;
+  --app-scrollbar-thumb: #ccc;
+  --app-scrollbar-thumb-hover: #999;
+}
+
+body.dark {
+  --app-bg: #0f1115;
+  --app-surface-bg: #14181f;
+  --app-surface-alt-bg: #191e27;
+  --app-text: #f5f6f8;
+  --app-text-muted: #b3b8c4;
+  --app-border: #2a2f3d;
+  --app-toolbar-bg: #11151d;
+  --app-toolbar-text: #f5f6f8;
+  --app-input-bg: #1d2431;
+  --app-input-text: #f5f6f8;
+  --app-card-bg: #171d28;
+  --app-scrollbar-thumb: #4a5362;
+  --app-scrollbar-thumb-hover: #6f7b93;
+}
+
+// Dark mode: respects system preference. Ionic's own dark-mode class
+// (added when using its dark palette) is also hooked in for consistency.
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-bg: #121212;
+    --app-text: #f0f0f0;
+    --app-text-muted: #aaa;
+    --app-border: #333;
+    --app-scrollbar-thumb: #444;
+    --app-scrollbar-thumb-hover: #666;
+  }
+}
+
+// ---------------------------------------------
+// Reset
+// ---------------------------------------------
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: var(--app-font);
+  color: var(--app-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // Prevent iOS text-size auto-inflation on rotate
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--app-bg);
+  // Respect notches/home-indicators on mobile devices
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  transition: background var(--app-transition-base), color var(--app-transition-base);
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+// Ensure Ionic app and router outlets expand to full width on desktop
+ion-app {
+  display: block;
+  width: 100%;
+}
+
+ion-router-outlet,
+ion-content,
+router-outlet {
+  width: 100%;
+  min-height: 100vh;
+}
+
+// ---------------------------------------------
+// Typography
+// ---------------------------------------------
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--app-text);
+}
+
+p {
+  line-height: 1.6;
+  color: var(--app-text);
+}
+
+small,
+.text-muted {
+  color: var(--app-text-muted);
+}
+
+a {
+  color: var(--ion-color-primary, #3880ff);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
+
+// ---------------------------------------------
+// Buttons
+// ---------------------------------------------
+ion-button {
+  font-weight: 600;
+  --transition: var(--app-transition-fast);
+}
+
+// ---------------------------------------------
+// Form elements
+// ---------------------------------------------
+ion-toolbar {
+  --background: var(--app-toolbar-bg);
+  --color: var(--app-toolbar-text);
+}
+
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+  --background: var(--app-input-bg);
+  --color: var(--app-input-text);
+  --border-color: var(--app-border);
+}
+
+// ---------------------------------------------
+// Lists
+// ---------------------------------------------
+ion-list {
+  padding: 0;
+  background: transparent;
+}
+
+ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+}
+
+// ---------------------------------------------
+// Accessibility: visible focus outline for keyboard users
+// ---------------------------------------------
+:focus-visible {
+  outline: 2px solid var(--ion-color-primary, #3880ff);
+  outline-offset: 2px;
+}
+
+// Respect users who prefer reduced motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ---------------------------------------------
+// Scrolling
+// ---------------------------------------------
+* {
+  scrollbar-width: thin; // Firefox
+  scrollbar-color: var(--app-scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--app-scrollbar-thumb);
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--app-scrollbar-thumb-hover);
+  }
+}
+
+// ---------------------------------------------
+// Text selection
+// ---------------------------------------------
+::selection {
+  background: var(--ion-color-primary, #3880ff);
+  color: #fff;
+}
+
+// ---------------------------------------------
+// Responsive utility classes
+// ---------------------------------------------
+@media (max-width: 576px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 400px) {
+  h1 {
+    font-size: 21px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+}
+
+// ---------------------------------------------
+// Print styles (handy for exporting hymn sheets)
+// ---------------------------------------------
+@media print {
+  ion-header,
+  ion-tab-bar,
+  ion-fab,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
+
+// ---------------------------------------------
+// Animations
+// ---------------------------------------------
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn var(--app-transition-base) ease-in;
+}
+
+.slide-up {
+  animation: slideUp var(--app-transition-base) ease-out;
+}
