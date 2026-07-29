@@ -32,7 +32,7 @@
 
       <div class="plate-divider" aria-hidden="true"></div>
 
-      <div class="plate-title">
+      <div class="plate-body">
         <label for="hymnTitle" class="sr-only">Hymn title</label>
         <input
           id="hymnTitle"
@@ -41,15 +41,20 @@
           [(ngModel)]="hymnTitle"
           placeholder="Untitled hymn"
         />
-        <span class="plate-caption">{{ isNew ? 'Creating a new entry' : 'Editing this entry' }}</span>
-      </div>
 
-      <div class="plate-language">
-        <label for="hymnLanguage" class="sr-only">Hymn language</label>
-        <select id="hymnLanguage" [(ngModel)]="hymnLanguage">
-          <option value="english">English</option>
-          <option value="tagalog">Tagalog</option>
-        </select>
+        <div class="plate-meta">
+          <span class="plate-caption">{{ isNew ? 'Creating a new entry' : 'Editing this entry' }}</span>
+
+          <div class="plate-language">
+            <label for="hymnLanguage" class="sr-only">Hymn language</label>
+            <div class="select-wrap">
+              <select id="hymnLanguage" [(ngModel)]="hymnLanguage">
+                <option value="english">English</option>
+                <option value="tagalog">Tagalog</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -82,7 +87,7 @@
     </div>
 
     <div class="actions">
-      <ion-button expand="block" (click)="saveHymn()" class="save-btn">
+      <ion-button expand="block" (click)="saveHymn()" class="save-btn ink-press">
         Save Hymn
       </ion-button>
       <ion-button expand="block" fill="clear" (click)="cancel()" class="cancel-btn">

@@ -26,6 +26,18 @@ export class AppComponent implements OnInit, OnDestroy {
     this.settingsSub = this.hymnStorage.settings$.subscribe((settings) => {
       this.applyTheme(settings.theme);
     });
+
+    // Dev helper: call `clearUserHymns()` from browser console to remove
+    // all user-added hymns (keeps built-ins). Prompts for confirmation.
+    (window as any).clearUserHymns = async () => {
+      // eslint-disable-next-line no-alert
+      if (confirm('Clear ALL user hymns from storage? This cannot be undone.')) {
+        await this.hymnStorage.clearUserHymns();
+        // eslint-disable-next-line no-alert
+        alert('User hymns cleared. Reloading.');
+        window.location.reload();
+      }
+    };
   }
 
   ngOnDestroy() {

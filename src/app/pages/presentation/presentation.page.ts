@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,7 +12,6 @@ import {
   chevronBack,
   chevronForward,
   arrowBack,
-  close,
   removeOutline,
   addOutline,
 } from 'ionicons/icons';
@@ -26,13 +25,16 @@ import { Hymn, HymnSection, AppSettings } from '../../models/hymn.model';
   templateUrl: './presentation.page.html',
   styleUrls: ['./presentation.page.scss'],
 })
-export class PresentationPage implements OnInit {
+export class PresentationPage implements OnInit, OnDestroy {
   hymn: Hymn | undefined = undefined;
   currentSectionIndex = 0;
   settings: AppSettings | null = null;
   touchStartX = 0;
   touchEndX = 0;
   fontSize = 3; // Scale 1-5
+
+  private stateStorageKey = 'hymn-presenter-state';
+  private currentHymnId: number | null = null;
 
   get quickJumpLabels(): string[] {
     if (!this.hymn) {
@@ -61,7 +63,6 @@ export class PresentationPage implements OnInit {
       chevronBack,
       chevronForward,
       arrowBack,
-      close,
       removeOutline,
       addOutline,
     });
@@ -80,10 +81,40 @@ export class PresentationPage implements OnInit {
     // Load hymn from route parameter
     this.route.params.subscribe(async (params) => {
       if (params['id']) {
-        this.hymn = await this.hymnStorage.getHymnById(+params['id']);
-        this.currentSectionIndex = 0;
+        this.currentHymnId = +params['id'];
+        this.hymn = await this.hymnStorage.getHymnById(this.currentHymnId);
+        this.restorePresenterState();
+        this.currentSectionIndex = this.currentSectionIndex ?? 0;
+        this.persistPresenterState();
       }
     });
+  }
+
+  ngOnDestroy() {
+    // Nothing special to clean up for the hymnal view.
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardNavigation(event: KeyboardEvent) {
+    const target = event.target as HTMLElement | null;
+    const interactiveElement = target?.tagName;
+
+    if (
+      interactiveElement === 'INPUT' ||
+      interactiveElement === 'TEXTAREA' ||
+      interactiveElement === 'SELECT' ||
+      interactiveElement === 'BUTTON'
+    ) {
+      return;
+    }
+
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.nextSection();
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.previousSection();
+    }
   }
 
   /**
@@ -96,12 +127,23 @@ export class PresentationPage implements OnInit {
     return this.hymn.sections[this.currentSectionIndex];
   }
 
+  // Projector and duplicate screen support removed to keep the page a simple hymnal.
+
+  getNextSection(): HymnSection | null {
+    if (!this.hymn || this.currentSectionIndex >= this.hymn.sections.length - 1) {
+      return null;
+    }
+
+    return this.hymn.sections[this.currentSectionIndex + 1];
+  }
+
   /**
    * Go to next section.
    */
   nextSection() {
     if (this.hymn && this.currentSectionIndex < this.hymn.sections.length - 1) {
       this.currentSectionIndex++;
+      this.persistPresenterState();
     }
   }
 
@@ -111,6 +153,7 @@ export class PresentationPage implements OnInit {
   previousSection() {
     if (this.currentSectionIndex > 0) {
       this.currentSectionIndex--;
+      this.persistPresenterState();
     }
   }
 
@@ -124,6 +167,7 @@ export class PresentationPage implements OnInit {
 
     const clampedIndex = Math.max(0, Math.min(index, this.hymn.sections.length - 1));
     this.currentSectionIndex = clampedIndex;
+    this.persistPresenterState();
   }
 
   /**
@@ -158,20 +202,31 @@ export class PresentationPage implements OnInit {
   }
 
   /**
-   * Handle left side tap (previous). Stops propagation so it doesn't also
-   * bubble up to the background tap handler and toggle the controls overlay.
+   * Handle a tap on the stage area. Only side-region taps navigate.
+   * Interactive controls are excluded so buttons remain usable.
    */
-  onLeftSideTap(event: Event) {
-    event.stopPropagation();
-    this.previousSection();
-  }
+  onStageTap(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
 
-  /**
-   * Handle right side tap (next)
-   */
-  onRightSideTap(event: Event) {
-    event.stopPropagation();
-    this.nextSection();
+    if (
+      target.closest('ion-button, button, .quick-jump-chip, .nav-btn, ion-icon, .presentation-header, .presentation-footer')
+    ) {
+      return;
+    }
+
+    const container = event.currentTarget as HTMLElement;
+    const rect = container.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const edgeWidth = rect.width * 0.28;
+
+    if (x <= edgeWidth) {
+      this.previousSection();
+    } else if (x >= rect.width - edgeWidth) {
+      this.nextSection();
+    }
   }
 
   /**
@@ -213,6 +268,7 @@ export class PresentationPage implements OnInit {
     if (this.fontSize < 5) {
       this.fontSize++;
       this.hymnStorage.updateSettings({ fontSize: this.fontSize });
+      this.persistPresenterState();
     }
   }
 
@@ -223,6 +279,7 @@ export class PresentationPage implements OnInit {
     if (this.fontSize > 1) {
       this.fontSize--;
       this.hymnStorage.updateSettings({ fontSize: this.fontSize });
+      this.persistPresenterState();
     }
   }
 
@@ -232,6 +289,7 @@ export class PresentationPage implements OnInit {
   onFontSizeChange(event: CustomEvent) {
     this.fontSize = event.detail.value;
     this.hymnStorage.updateSettings({ fontSize: this.fontSize });
+    this.persistPresenterState();
   }
 
   /**
@@ -272,6 +330,37 @@ export class PresentationPage implements OnInit {
    */
   exitPresentation() {
     this.router.navigate(['/library']);
+  }
+
+  private restorePresenterState() {
+    try {
+      const savedState = localStorage.getItem(this.stateStorageKey);
+      if (!savedState) {
+        return;
+      }
+
+      const parsedState = JSON.parse(savedState);
+      if (parsedState.hymnId === this.currentHymnId) {
+        this.currentSectionIndex = parsedState.currentSectionIndex ?? 0;
+        this.fontSize = parsedState.fontSize ?? this.fontSize;
+      }
+    } catch (error) {
+      console.warn('Unable to restore presenter state', error);
+    }
+  }
+
+  private persistPresenterState() {
+    if (!this.currentHymnId) {
+      return;
+    }
+
+    const state = {
+      hymnId: this.currentHymnId,
+      currentSectionIndex: this.currentSectionIndex,
+      fontSize: this.fontSize,
+    };
+
+    localStorage.setItem(this.stateStorageKey, JSON.stringify(state));
   }
 
   /**

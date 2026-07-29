@@ -46,6 +46,10 @@
   gap: 18px;
   padding: 22px 20px;
   margin-bottom: 28px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; // safety net: nothing inside can push the card off-screen
   background: linear-gradient(135deg, var(--hymn-paper-shade) 0%, var(--hymn-paper) 100%);
   border: 1px solid var(--hymn-rule);
   border-radius: 20px;
@@ -53,39 +57,25 @@
   animation: plateIn 0.4s ease-out;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .plate {
-    animation: none;
-  }
-}
-
-@keyframes plateIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .plate-number {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
+  flex: 0 0 84px;   // was: flex: 0 0 auto; min-width: 84px — pin it so it can't grow
+  width: 84px;
   min-width: 84px;
+  max-width: 84px;
+  box-sizing: border-box;
   padding: 8px 10px;
   border: 1.5px solid var(--hymn-maroon);
   border-radius: 8px;
   transform: rotate(-1deg);
   position: relative;
   background: var(--hymn-paper-shade);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
   &::after {
-    // faint letterpress ring, suggests a stamped plate rather than a flat box
     content: '';
     position: absolute;
     inset: 4px;
@@ -93,6 +83,21 @@
     border-radius: 2px;
     pointer-events: none;
   }
+
+  &:focus-within {
+    transform: rotate(-1deg) scale(1.02);
+    box-shadow: 0 4px 12px rgba(124, 46, 46, 0.1);
+  }
+}
+
+.plate-body {
+  flex: 1 1 0%;   // was: flex: 1 1 auto — 0% basis forces it to rely on min-width:0 to shrink correctly
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  box-sizing: border-box;
+  gap: 8px;
 }
 
 .plate-number-label {
@@ -138,32 +143,21 @@
   background: var(--hymn-rule);
 }
 
-.plate-title {
+// ---------------------------------------------
+// Plate body — title on top, caption + language wrap below.
+// ---------------------------------------------
+.plate-body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 0;
-}
-
-.plate-language {
-  display: flex;
-  align-items: center;
-}
-
-.plate-language select {
-  min-width: 120px;
-  padding: 8px 10px;
-  border: 1px solid var(--hymn-rule);
-  border-radius: 999px;
-  background: var(--app-input-bg);
-  color: var(--hymn-ink);
-  font-family: var(--hymn-font-body);
-  font-size: 0.95rem;
+  min-width: 0; // critical: lets this column shrink instead of overflowing
+  gap: 8px;
 }
 
 .plate-title-input {
   width: 100%;
+  min-width: 0;
   border: none;
   border-bottom: 1px solid var(--hymn-rule);
   background: transparent;
@@ -172,6 +166,7 @@
   font-weight: 600;
   font-size: 1.5rem;
   color: var(--hymn-ink);
+  transition: border-color 0.15s ease;
 
   &::placeholder {
     color: var(--hymn-ink-soft);
@@ -181,15 +176,84 @@
   &:focus-visible {
     outline: none;
     border-bottom-color: var(--hymn-maroon);
+    border-bottom-width: 2px;
   }
 }
 
+.plate-meta {
+  display: flex;
+  flex-wrap: wrap; // lets caption + select drop to separate lines instead of overlapping
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
 .plate-caption {
-  margin-top: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
   font-family: var(--hymn-font-body);
   font-style: italic;
   font-size: 0.85rem;
   color: var(--hymn-ink-soft);
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.plate-language {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.select-wrap {
+  position: relative;
+  width: 112px; // fixed so English/Tagalog don't change the control's shape
+  transition: transform 0.12s var(--press-ease, ease);
+
+  &::after {
+    // custom caret, since native ones vary by browser and clash with the pill look
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--hymn-ink-soft);
+    border-bottom: 1.5px solid var(--hymn-ink-soft);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.plate-language select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 7px 28px 7px 12px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 8px;
+  background: var(--app-input-bg);
+  color: var(--hymn-ink);
+  font-family: var(--hymn-font-body);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--hymn-gold);
+    outline-offset: 1px;
+  }
+
+  &:hover {
+    border-color: var(--hymn-maroon);
+  }
 }
 
 // ---------------------------------------------
@@ -223,6 +287,7 @@
   border: 1px solid rgba(124, 46, 46, 0.18);
   border-radius: 999px;
   padding: 3px 10px;
+  transition: transform 0.2s ease;
 }
 
 .lyrics-frame {
@@ -231,6 +296,11 @@
   border-radius: 14px;
   padding: 4px;
   box-shadow: inset 0 1px 0 rgba(248, 243, 232, 0.08);
+  transition: box-shadow 0.15s ease;
+
+  &:focus-within {
+    box-shadow: 0 0 0 2px rgba(169, 129, 62, 0.25);
+  }
 }
 
 .lyrics-input {
@@ -312,12 +382,23 @@
   font-weight: 600;
   letter-spacing: 0.01em;
   height: 48px;
+
+  // .ink-press (global utility) handles the radial flash on :active;
+  // this adds the shadow-dip half of the "stamp" feel, specific to this button.
+  &:active {
+    --box-shadow: 0 2px 8px rgba(124, 46, 46, 0.22);
+  }
 }
 
 .cancel-btn {
   --color: var(--hymn-ink-soft);
   font-family: var(--hymn-font-body);
   --border-radius: 999px;
+  transition: opacity 0.12s ease;
+
+  &:active {
+    opacity: 0.6;
+  }
 }
 
 // ---------------------------------------------
@@ -326,7 +407,7 @@
 @media (max-width: 400px) {
   .plate {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 14px;
   }
 
@@ -336,6 +417,9 @@
   }
 
   .plate-number {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
     align-self: flex-start;
     min-width: 64px;
   }

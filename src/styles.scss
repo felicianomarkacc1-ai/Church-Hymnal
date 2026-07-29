@@ -67,6 +67,16 @@
   --stage-glow: rgba(169, 129, 62, 0.08);
   --stage-surface: rgba(255, 255, 255, 0.42);
   --stage-surface-alt: rgba(255, 255, 255, 0.24);
+
+  // ---------------------------------------------
+  // Press-effect tokens (used by the global interaction
+  // system below — the "ink stamp" tap feedback)
+  // ---------------------------------------------
+  --press-scale: 0.96;
+  --press-scale-soft: 0.98;
+  --press-duration: 0.14s;
+  --press-ease: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --press-ink: rgba(124, 46, 46, 0.16);
 }
 
 body.light {
@@ -111,6 +121,16 @@ body.dark {
   --hymn-maroon-shade: #c48172;
   --hymn-gold: #f0c96b;
 
+  --stage-bg: #0a0d12;
+  --stage-bg-edge: #10151f;
+  --stage-text: #f8f3e8;
+  --stage-text-soft: #bbc3d4;
+  --stage-accent: #f0c96b;
+  --stage-rule: rgba(248, 243, 232, 0.16);
+  --stage-glow: rgba(240, 201, 107, 0.1);
+  --stage-surface: rgba(248, 243, 232, 0.06);
+  --stage-surface-alt: rgba(248, 243, 232, 0.1);
+
   --ion-background-color: #12161f;
   --ion-background-color-rgb: 18, 22, 31;
   --ion-text-color: #f8f3e8;
@@ -120,6 +140,8 @@ body.dark {
   --ion-toolbar-color: #f8f3e8;
   --ion-item-background: #1c2332;
   --ion-card-background: #1c2332;
+
+  --press-ink: rgba(240, 201, 107, 0.14);
 
   background: linear-gradient(140deg, #0a0d12 0%, #151a24 55%, #0e131a 100%);
 }
@@ -411,4 +433,88 @@ ion-item {
 
 .slide-up {
   animation: slideUp var(--app-transition-base) ease-out;
+}
+
+// ===============================================
+// GLOBAL PRESS / TAP EFFECTS ("ink stamp")
+// Applies app-wide so every button feels consistent.
+// Scale-down + shadow dip + a faint ink flash on press,
+// in keeping with the hymnal/letterpress aesthetic.
+// ===============================================
+
+// Disable Ionic's built-in ripple/activated opacity so it doesn't
+// fight with the custom effect below.
+ion-button {
+  --ripple-color: transparent;
+  transition: transform var(--press-duration) var(--press-ease),
+    filter var(--press-duration) var(--press-ease),
+    box-shadow var(--press-duration) var(--press-ease);
+  will-change: transform;
+}
+
+ion-button:active {
+  transform: scale(var(--press-scale));
+  filter: brightness(0.96);
+}
+
+// Solid/filled buttons (like Save Hymn) get a shadow "dip" on press,
+// since they already carry a lifted box-shadow at rest.
+ion-button[fill="solid"]:active,
+ion-button:not([fill]):active {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+}
+
+// Native HTML buttons anywhere in the app (not just Ionic components)
+button,
+.btn-press {
+  transition: transform var(--press-duration) var(--press-ease),
+    filter var(--press-duration) var(--press-ease),
+    box-shadow var(--press-duration) var(--press-ease);
+}
+
+button:active,
+.btn-press:active {
+  transform: scale(var(--press-scale-soft));
+  filter: brightness(0.96);
+}
+
+// Tappable cards/list rows/icons — a lighter touch than buttons
+.tappable,
+ion-item[button] {
+  transition: transform var(--press-duration) var(--press-ease),
+    background-color var(--press-duration) var(--press-ease);
+  cursor: pointer;
+}
+
+.tappable:active,
+ion-item[button]:active {
+  transform: scale(0.985);
+}
+
+// ---------------------------------------------
+// Ink-flash utility: a soft radial pulse from the center,
+// for buttons that want a bit more theatrics than scale alone
+// (opt-in via class, e.g. on primary CTAs).
+// ---------------------------------------------
+.ink-press {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, var(--press-ink) 0%, transparent 70%);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.25s ease, transform 0.35s ease;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  &:active::after {
+    opacity: 1;
+    transform: scale(1.4);
+    transition: opacity 0.05s ease, transform 0.05s ease;
+  }
 }

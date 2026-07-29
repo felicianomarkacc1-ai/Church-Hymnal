@@ -2,6 +2,9 @@
   <ion-toolbar>
     <ion-title>Bantog Christian Church</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="addNewHymn()" class="hymn-fab-inline" aria-label="Add new hymn">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
       <ion-button (click)="goToSettings()" aria-label="Settings">
         <ion-icon slot="icon-only" name="settings"></ion-icon>
       </ion-button>
@@ -109,10 +112,4 @@
       </li>
     </ul>
   </div>
-
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button (click)="addNewHymn()" class="hymn-fab" aria-label="Add new hymn">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>

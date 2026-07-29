@@ -15,7 +15,17 @@
 .transpose-shell {
   max-width: 760px;
   margin: 22px auto 40px;
-  padding: 0 16px;
+  padding: 0 16px calc(40px + env(safe-area-inset-bottom, 0px));
+}
+
+.page-eyebrow {
+  margin: 0 0 10px;
+  color: var(--hymn-ink-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
 }
 
 .transpose-hero {
@@ -25,6 +35,7 @@
   border-radius: 20px;
   background: linear-gradient(135deg, var(--hymn-paper-shade) 0%, var(--hymn-paper) 100%);
   box-shadow: 0 10px 24px rgba(43, 36, 29, 0.05);
+  text-align: center;
 }
 
 .transpose-hero h2 {
@@ -35,7 +46,8 @@
 }
 
 .transpose-hero p {
-  margin: 0;
+  margin: 0 auto;
+  max-width: 520px;
   color: var(--hymn-ink-soft);
   font-family: var(--hymn-font-body);
   line-height: 1.55;
@@ -141,7 +153,7 @@
 }
 
 .transpose-result {
-  text-align: left;
+  text-align: center;
 }
 
 .result-head {
@@ -149,10 +161,11 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--hymn-ink);
+  text-align: center;
 }
 
 .transpose-result pre {
-  margin: 0;
+  margin: 0 auto;
   padding: 12px;
   border: 1px solid var(--hymn-rule);
   border-radius: 12px;
@@ -160,6 +173,7 @@
   color: var(--hymn-ink);
   white-space: pre-wrap;
   line-height: 1.55;
+  text-align: left;
 }
 
 .saved-transposes {
@@ -174,12 +188,22 @@
   font-family: var(--hymn-font-display);
 }
 
+.saved-transposes ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .saved-entry {
   margin-bottom: 12px;
   padding: 12px 12px 10px;
   border: 1px solid var(--hymn-rule);
   border-radius: 14px;
   background: var(--hymn-paper-shade);
+}
+
+.saved-entry:last-child {
+  margin-bottom: 0;
 }
 
 .saved-entry-header {
@@ -204,11 +228,13 @@
   padding: 8px;
   border: 1px solid var(--hymn-rule);
   border-radius: 10px;
-  max-height: 5.2rem;
-  overflow: hidden;
+  max-height: 6.5rem;
+  overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-word;
   background: var(--hymn-paper-shade);
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 .saved-entry-actions {

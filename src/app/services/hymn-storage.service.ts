@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Hymn, HymnSection, AppSettings, SavedTranspose } from '../models/hymn.model';
+import { sampleHymns } from '../data/sample-hymns';
 import { Storage } from '@ionic/storage-angular';
+
+/** ID offset for built-in hymns so they never collide with user-added hymn IDs */
+const BUILT_IN_ID_BASE = 1_000_000;
 
 @Injectable({
   providedIn: 'root',
 })
 export class HymnStorageService {
-  private hymnsSubject = new BehaviorSubject<Hymn[]>([]);
+  /** Hardcoded hymns from data/sample-hymns.ts. Computed once, never persisted. */
+  private readonly builtInHymns: Hymn[] = this.buildBuiltInHymns();
+
+  /** Only hymns the user has added/imported themselves, persisted to local storage. */
+  private userHymnsSubject = new BehaviorSubject<Hymn[]>([]);
+
+  /** Combined view: built-in + user hymns, sorted by number. This is what the app reads from. */
+  private hymnsSubject = new BehaviorSubject<Hymn[]>(this.builtInHymns);
+
   private savedTransposesSubject = new BehaviorSubject<SavedTranspose[]>([]);
   private settingsSubject = new BehaviorSubject<AppSettings>({
     id: 'app-settings',
@@ -22,7 +34,15 @@ export class HymnStorageService {
 
   private initialized = false;
 
-  constructor(private storage: Storage) {}
+  constructor(private storage: Storage) {
+    // Whenever the user's stored hymns change, recombine with the built-ins.
+    this.userHymnsSubject.subscribe((userHymns) => {
+      const combined = [...this.builtInHymns, ...userHymns].sort(
+        (a, b) => a.number - b.number
+      );
+      this.hymnsSubject.next(combined);
+    });
+  }
 
   /**
    * Initialize storage and load all data
@@ -82,11 +102,15 @@ export class HymnStorageService {
   }
 
   /**
-   * Load all hymns from storage
+   * Load user-added hymns from storage. Any stored hymn whose number matches
+   * a built-in hymn is dropped automatically — this cleans up old installs
+   * where sample hymns had previously been seeded directly into storage.
    */
   private async loadHymns(): Promise<void> {
-    const hymns = await this.storage.get('hymns');
-    this.hymnsSubject.next(hymns || []);
+    const stored: Hymn[] = (await this.storage.get('hymns')) || [];
+    const builtInNumbers = new Set(this.builtInHymns.map((h) => h.number));
+    const userOnly = stored.filter((h) => !builtInNumbers.has(h.number));
+    this.userHymnsSubject.next(userOnly);
   }
 
   /**
@@ -100,30 +124,28 @@ export class HymnStorageService {
   }
 
   /**
-   * Get all hymns synchronously (for subscriptions)
+   * Get all hymns synchronously (built-in + user, combined)
    */
   getHymnsSync(): Hymn[] {
     return this.hymnsSubject.value;
   }
 
   /**
-   * Get a hymn by ID
+   * Get a hymn by ID (built-in or user-added)
    */
   async getHymnById(id: number): Promise<Hymn | undefined> {
-    const hymns = this.hymnsSubject.value;
-    return hymns.find((h) => h.id === id);
+    return this.hymnsSubject.value.find((h) => h.id === id);
   }
 
   /**
-   * Get a hymn by hymn number
+   * Get a hymn by hymn number (built-in or user-added)
    */
   async getHymnByNumber(number: number): Promise<Hymn | undefined> {
-    const hymns = this.hymnsSubject.value;
-    return hymns.find((h) => h.number === number);
+    return this.hymnsSubject.value.find((h) => h.number === number);
   }
 
   /**
-   * Search hymns by title or number
+   * Search hymns by title or number (built-in + user)
    */
   search(query: string): Hymn[] {
     const hymns = this.hymnsSubject.value;
@@ -136,7 +158,41 @@ export class HymnStorageService {
   }
 
   /**
-   * Add a new hymn
+   * Checks whether a hymn number is already used by another hymn in the
+   * same language (built-in or user-added). The same number is allowed to
+   * exist once per language (e.g. #132 in English and #132 in Tagalog),
+   * but not twice within the same language.
+   *
+   * @param excludeId optional hymn id to ignore (used when updating a hymn,
+   * so it doesn't collide with itself)
+   */
+  private isNumberTakenInLanguage(
+    number: number,
+    language: 'english' | 'tagalog',
+    excludeId?: number
+  ): boolean {
+    return this.hymnsSubject.value.some(
+      (h) =>
+        h.number === number &&
+        (h.language ?? 'english') === language &&
+        h.id !== excludeId
+    );
+  }
+
+  /**
+   * Builds a friendly error message for a duplicate hymn number within a language.
+   */
+  private duplicateNumberMessage(
+    number: number,
+    language: 'english' | 'tagalog'
+  ): string {
+    const languageLabel = language === 'english' ? 'English' : 'Tagalog';
+    return `Hymn #${number} already exists in ${languageLabel}. Please choose a different number.`;
+  }
+
+  /**
+   * Add a new user hymn. Always saved to local storage; never touches built-ins.
+   * Throws if a hymn with the same number already exists in the same language.
    */
   async addHymn(
     number: number,
@@ -144,8 +200,12 @@ export class HymnStorageService {
     lyricsText: string,
     language: 'english' | 'tagalog' = 'english'
   ): Promise<Hymn> {
-    const hymns = this.hymnsSubject.value;
-    const newId = Math.max(0, ...hymns.map((h) => h.id)) + 1;
+    if (this.isNumberTakenInLanguage(number, language)) {
+      throw new Error(this.duplicateNumberMessage(number, language));
+    }
+
+    const userHymns = this.userHymnsSubject.value;
+    const newId = Math.max(0, ...userHymns.map((h) => h.id)) + 1;
     const sections = this.parseHymnText(lyricsText);
 
     const hymn: Hymn = {
@@ -158,15 +218,16 @@ export class HymnStorageService {
       updatedAt: Date.now(),
     };
 
-    const updated = [...hymns, hymn].sort((a, b) => a.number - b.number);
+    const updated = [...userHymns, hymn].sort((a, b) => a.number - b.number);
     await this.storage.set('hymns', updated);
-    this.hymnsSubject.next(updated);
+    this.userHymnsSubject.next(updated);
 
     return hymn;
   }
 
   /**
-   * Update an existing hymn
+   * Update an existing user hymn. Throws if the target is a built-in hymn,
+   * or if the new number/language combo collides with a different hymn.
    */
   async updateHymn(
     id: number,
@@ -175,14 +236,22 @@ export class HymnStorageService {
     lyricsText: string,
     language: 'english' | 'tagalog' = 'english'
   ): Promise<Hymn | undefined> {
-    const hymns = this.hymnsSubject.value;
-    const index = hymns.findIndex((h) => h.id === id);
+    if (id >= BUILT_IN_ID_BASE) {
+      throw new Error('Built-in hymns cannot be edited.');
+    }
+
+    if (this.isNumberTakenInLanguage(number, language, id)) {
+      throw new Error(this.duplicateNumberMessage(number, language));
+    }
+
+    const userHymns = this.userHymnsSubject.value;
+    const index = userHymns.findIndex((h) => h.id === id);
 
     if (index === -1) return undefined;
 
     const sections = this.parseHymnText(lyricsText);
-    hymns[index] = {
-      ...hymns[index],
+    userHymns[index] = {
+      ...userHymns[index],
       number,
       title,
       language,
@@ -190,20 +259,33 @@ export class HymnStorageService {
       updatedAt: Date.now(),
     };
 
-    const updated = [...hymns].sort((a, b) => a.number - b.number);
+    const updated = [...userHymns].sort((a, b) => a.number - b.number);
     await this.storage.set('hymns', updated);
-    this.hymnsSubject.next(updated);
+    this.userHymnsSubject.next(updated);
 
-    return hymns[index];
+    return userHymns[index];
   }
 
   /**
-   * Delete a hymn
+   * Delete a user hymn. Throws if the target is a built-in hymn.
    */
   async deleteHymn(id: number): Promise<void> {
-    const hymns = this.hymnsSubject.value.filter((h) => h.id !== id);
-    await this.storage.set('hymns', hymns);
-    this.hymnsSubject.next(hymns);
+    if (id >= BUILT_IN_ID_BASE) {
+      throw new Error('Built-in hymns cannot be deleted.');
+    }
+
+    const userHymns = this.userHymnsSubject.value.filter((h) => h.id !== id);
+    await this.storage.set('hymns', userHymns);
+    this.userHymnsSubject.next(userHymns);
+  }
+
+  /**
+   * Remove all user-added hymns from storage and reset the in-memory list.
+   * This does not touch built-in hymns defined in `sample-hymns.ts`.
+   */
+  async clearUserHymns(): Promise<void> {
+    await this.storage.remove('hymns');
+    this.userHymnsSubject.next([]);
   }
 
   /**
@@ -291,35 +373,55 @@ export class HymnStorageService {
   }
 
   /**
-   * Export all hymns as JSON
+   * Export all hymns as JSON. Includes built-ins for a full backup;
+   * on import, built-in numbers are skipped automatically (see loadHymns).
    */
   exportToJSON(): string {
-    const hymns = this.hymnsSubject.value;
-    return JSON.stringify(hymns, null, 2);
+    return JSON.stringify(this.hymnsSubject.value, null, 2);
   }
 
   /**
-   * Import hymns from JSON
+   * Import hymns from JSON as user hymns. Skips any whose number
+   * matches a built-in hymn, since those already exist.
+   * Also skips any that would collide with an existing hymn in the
+   * same language (number + language already taken).
    */
   async importFromJSON(jsonText: string): Promise<Hymn[]> {
     try {
-      const hymns = JSON.parse(jsonText) as Hymn[];
-      // Ensure IDs don't conflict
-      const existing = this.hymnsSubject.value;
+      const parsed = JSON.parse(jsonText) as Hymn[];
+      const builtInNumbers = new Set(this.builtInHymns.map((h) => h.number));
+
+      const existing = this.userHymnsSubject.value;
       const maxId = Math.max(0, ...existing.map((h) => h.id));
 
-      const imported = hymns.map((h, idx) => ({
-        ...h,
-        id: maxId + idx + 1,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      }));
+      const imported: Hymn[] = [];
+      let nextId = maxId + 1;
+
+      for (const h of parsed) {
+        if (builtInNumbers.has(h.number)) continue;
+
+        const language = h.language ?? 'english';
+        const alreadyTaken = this.isNumberTakenInLanguage(h.number, language);
+        const alreadyQueued = imported.some(
+          (q) => q.number === h.number && (q.language ?? 'english') === language
+        );
+
+        if (alreadyTaken || alreadyQueued) continue;
+
+        imported.push({
+          ...h,
+          id: nextId++,
+          isBuiltIn: false,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+      }
 
       const merged = [...existing, ...imported].sort(
         (a, b) => a.number - b.number
       );
       await this.storage.set('hymns', merged);
-      this.hymnsSubject.next(merged);
+      this.userHymnsSubject.next(merged);
 
       return imported;
     } catch (error) {
@@ -329,178 +431,20 @@ export class HymnStorageService {
   }
 
   /**
-   * Seed database with sample hymns (development only)
+   * Build the permanent, hardcoded hymn list from data/sample-hymns.ts.
+   * These are computed fresh on every app load and never written to storage,
+   * so adding a new entry to sample-hymns.ts always shows up immediately.
    */
-  async seedSampleData(): Promise<void> {
-    const existing = this.hymnsSubject.value;
-    if (existing.length > 0) return; // Don't seed if data exists
-
-    const sampleHymns = [
-      {
-        number: 1,
-        title: 'O Come All Ye Faithful',
-        lyrics: `[Verse 1]
-O come, all ye faithful,
-Joyful and triumphant!
-O come ye, O come ye,
-To Bethlehem;
-Come and behold Him
-Born the King of Angels:
-
-[Chorus]
-O come, let us adore Him,
-O come, let us adore Him,
-O come, let us adore Him,
-Christ the Lord!`,
-      },
-      {
-        number: 132,
-        title: 'Amazing Grace',
-        lyrics: `[Verse 1]
-Amazing grace, how sweet the sound,
-That saved a wretch like me!
-I once was lost, but now am found,
-Was blind, but now I see.
-
-[Verse 2]
-'Twas grace that taught my heart to fear,
-And grace my fears relieved;
-How precious did that grace appear
-The hour I first believed!
-
-[Chorus]
-Through many dangers, toils and snares,
-I have already come;
-'Tis grace has brought me safe thus far,
-And grace will lead me home.`,
-      },
-      {
-        number: 256,
-        title: 'It Is Well with My Soul',
-        lyrics: `[Verse 1]
-When peace like a river attendeth my way,
-When sorrows like sea billows roll;
-Whatever my lot, Thou hast taught me to say,
-"It is well, it is well with my soul."
-
-[Chorus]
-It is well (it is well)
-With my soul (with my soul),
-It is well, it is well with my soul.
-
-[Verse 2]
-Though Satan should buffet, though trials should come,
-Let this blessed assurance control,
-That Christ has regarded my helpless estate,
-And hath shed His own blood for my soul.`,
-      },
-      {
-        number: 347,
-        title: 'Jesus Loves Me',
-        lyrics: `[Verse 1]
-Jesus loves me, this I know,
-For the Bible tells me so.
-Little ones to Him belong;
-They are weak, but He is strong.
-
-[Chorus]
-Yes, Jesus loves me,
-Yes, Jesus loves me,
-Yes, Jesus loves me,
-The Bible tells me so.
-
-[Verse 2]
-Jesus loves me, loves me still,
-Though I'm very weak and ill.
-From His shining throne on high,
-Comes to watch me where I lie.`,
-      },
-      {
-        number: 449,
-        title: 'Great Is Thy Faithfulness',
-        lyrics: `[Verse 1]
-Great is Thy faithfulness,
-O God my Father!
-There is no shadow of turning with Thee;
-Thou changest not, Thy compassions they fail not,
-As Thou hast been Thou forever will be.
-
-[Chorus]
-Great is Thy faithfulness!
-Great is Thy faithfulness!
-Morning by morning new mercies I see;
-All I have needed Thy hand hath provided;
-Great is Thy faithfulness, Lord, unto me!`,
-      },
-      {
-        number: 71,
-        title: 'Holy, Holy, Holy',
-        lyrics: `[Verse 1]
-Holy, holy, holy!
-Lord God Almighty!
-Early in the morning my song shall rise to Thee;
-Holy, holy, holy, merciful and mighty,
-God in three Persons, blessed Trinity.
-
-[Verse 2]
-Holy, holy, holy! All the saints adore Thee,
-Casting down their golden crowns around the glassy sea;
-Cherubim and seraphim falling down before Thee,
-Who wert and art and evermore shalt be.
-
-[Chorus]
-Holy, holy, holy!
-Though the darkness hide Thee,
-Though the eye of sinful man Thy glory may not see;
-Only Thou art holy, there is none beside Thee,
-Perfect in power, in love, and purity.`,
-      },
-      {
-        number: 293,
-        title: 'Blessed Assurance',
-        lyrics: `[Verse 1]
-Blessed assurance, Jesus is mine!
-O what a foretaste of glory divine!
-Heir of salvation, purchase of God,
-Born of His Spirit, washed in His blood.
-
-[Chorus]
-This is my story, this is my song,
-Praising my Savior all the day long;
-This is my story, this is my song,
-Praising my Savior all the day long.
-
-[Verse 2]
-Perfect submission, perfect delight,
-Visions of rapture now burst on my sight;
-Angels descending bring from above
-Echoes of mercy, whispers of love.`,
-      },
-      {
-        number: 147,
-        title: 'How Great Thou Art',
-        lyrics: `[Verse 1]
-O Lord my God, when I in awesome wonder
-Consider all the worlds Thy hands have made,
-I see the stars, I hear the rolling thunder,
-Thy power throughout the universe displayed.
-
-[Chorus]
-Then sings my soul, my Savior God, to Thee,
-How great Thou art, how great Thou art!
-Then sings my soul, my Savior God, to Thee,
-How great Thou art, how great Thou art!
-
-[Verse 2]
-When through the woods and forest glades I wander
-And hear the birds sing sweetly in the trees;
-When I look down from lofty mountain grandeur
-And hear the brook, and feel the gentle breeze.`,
-      },
-    ];
-
-    for (const hymn of sampleHymns) {
-      await this.addHymn(hymn.number, hymn.title, hymn.lyrics);
-    }
+  private buildBuiltInHymns(): Hymn[] {
+    return sampleHymns.map((entry, index) => ({
+      id: BUILT_IN_ID_BASE + index,
+      number: entry.number,
+      title: entry.title,
+      language: entry.language ?? 'english',
+      sections: this.parseHymnText(entry.lyrics),
+      isBuiltIn: true,
+      createdAt: 0,
+      updatedAt: 0,
+    }));
   }
 }

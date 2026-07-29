@@ -7,6 +7,12 @@ export interface Hymn {
   sections: HymnSection[];
   createdAt: number;
   updatedAt: number;
+  /**
+   * True for hymns that ship hardcoded with the app (from data/sample-hymns.ts).
+   * These are never persisted to storage and cannot be edited or deleted.
+   * User-added hymns omit this (or set it false).
+   */
+  isBuiltIn?: boolean;
 }
 
 export interface SavedTranspose {

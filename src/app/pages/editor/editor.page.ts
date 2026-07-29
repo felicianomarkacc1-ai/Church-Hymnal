@@ -125,8 +125,10 @@ export class EditorPage implements OnInit {
       }
 
       this.router.navigate(['/library']);
-    } catch (error) {
-      alert('Error saving hymn');
+       } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Error saving hymn';
+      alert(message);
       console.error(error);
     }
   }

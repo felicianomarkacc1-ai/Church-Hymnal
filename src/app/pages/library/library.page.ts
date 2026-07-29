@@ -69,9 +69,6 @@ export class LibraryPage implements OnInit {
   async ngOnInit() {
     await this.hymnStorage.initialize();
 
-    // Seed sample data if needed
-    await this.hymnStorage.seedSampleData();
-
     // Subscribe to hymns
     this.hymnStorage.hymns$.subscribe((hymns) => {
       this.hymns = hymns;
