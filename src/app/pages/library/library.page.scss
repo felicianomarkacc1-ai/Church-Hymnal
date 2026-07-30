@@ -5,43 +5,29 @@
 // language (which changes list length/height) never shifts the
 // centered .container left/right.
 // ---------------------------------------------
-.library-content {
-  --background: var(--hymn-paper);
-
-  &::part(scroll) {
-    scrollbar-gutter: stable;
-    overflow-y: scroll; // fallback for browsers without scrollbar-gutter support
-  }
-}
 
 .hymn-header ion-toolbar {
   --background: var(--hymn-paper);
   --color: var(--hymn-ink);
   --border-color: var(--hymn-rule);
   font-family: var(--hymn-font-display);
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.hymn-header ion-buttons {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .hymn-header ion-title {
   font-family: var(--hymn-font-display);
   font-weight: 700;
   text-align: center;
-  max-width: calc(100% - 88px);
-  min-width: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  font-size: clamp(1.2rem, 3.4vw, 1.7rem);
+  font-size: clamp(1rem, 3vw, 1.5rem);
   letter-spacing: 0.02em;
+  white-space: normal;
+}
+.hymn-logo {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin: 0 8px;
+  flex-shrink: 0;
 }
 
 // ---------------------------------------------
@@ -680,4 +666,5 @@ ion-fab[vertical="bottom"][horizontal="end"] {
     min-width: 2ch;
     font-size: 1rem;
   }
+  
 }
