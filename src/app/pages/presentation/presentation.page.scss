@@ -186,6 +186,16 @@ ion-content.presentation-content {
     font-size: clamp(42px, min(9vh, 13vw), 80px);
     max-width: min(1150px, 100%);
   }
+
+  &.font-xxl .lyrics-text {
+    font-size: clamp(48px, min(10.5vh, 15vw), 96px);
+    max-width: min(1100px, 100%);
+  }
+
+  &.font-xxxl .lyrics-text {
+    font-size: clamp(56px, min(12.5vh, 18vw), 112px);
+    max-width: min(1050px, 100%);
+  }
 }
 
 // ---------------------------------------------

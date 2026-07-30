@@ -51,6 +51,7 @@ export class LibraryPage implements OnInit {
   filteredHymns: Hymn[] = [];
   searchQuery = '';
   selectedLanguage: 'english' | 'tagalog' = 'english';
+  private readonly selectedLanguageStorageKey = 'library.selectedLanguage';
 
   constructor(
     private hymnStorage: HymnStorageService,
@@ -67,6 +68,7 @@ export class LibraryPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.selectedLanguage = this.loadPersistedLanguage();
     await this.hymnStorage.initialize();
 
     // Subscribe to hymns
@@ -74,6 +76,21 @@ export class LibraryPage implements OnInit {
       this.hymns = hymns;
       this.filterHymns();
     });
+  }
+
+  private loadPersistedLanguage(): 'english' | 'tagalog' {
+    if (typeof window === 'undefined') {
+      return 'english';
+    }
+
+    const storedLanguage = window.localStorage.getItem(this.selectedLanguageStorageKey);
+    return storedLanguage === 'tagalog' ? 'tagalog' : 'english';
+  }
+
+  private persistLanguage(language: 'english' | 'tagalog') {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(this.selectedLanguageStorageKey, language);
+    }
   }
 
   private isEnglishHymn(hymn: Hymn): boolean {
@@ -96,6 +113,7 @@ export class LibraryPage implements OnInit {
 
   setLanguage(language: 'english' | 'tagalog') {
     this.selectedLanguage = language;
+    this.persistLanguage(language);
     this.filterHymns();
   }
 

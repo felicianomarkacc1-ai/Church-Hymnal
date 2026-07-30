@@ -31,7 +31,7 @@ export class PresentationPage implements OnInit, OnDestroy {
   settings: AppSettings | null = null;
   touchStartX = 0;
   touchEndX = 0;
-  fontSize = 3; // Scale 1-5
+  fontSize = 3; // Scale 1-7
 
   private stateStorageKey = 'hymn-presenter-state';
   private currentHymnId: number | null = null;
@@ -265,7 +265,7 @@ export class PresentationPage implements OnInit, OnDestroy {
    * Increase font size
    */
   increaseFontSize() {
-    if (this.fontSize < 5) {
+    if (this.fontSize < 7) {
       this.fontSize++;
       this.hymnStorage.updateSettings({ fontSize: this.fontSize });
       this.persistPresenterState();
@@ -302,6 +302,8 @@ export class PresentationPage implements OnInit, OnDestroy {
       3: 'font-md',
       4: 'font-lg',
       5: 'font-xl',
+      6: 'font-xxl',
+      7: 'font-xxxl',
     };
     return sizeMap[this.fontSize] || 'font-md';
   }
