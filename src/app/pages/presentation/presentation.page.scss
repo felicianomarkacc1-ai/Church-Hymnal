@@ -27,16 +27,50 @@ ion-content.presentation-content {
   overflow: hidden;
 }
 
-.presentation-back-btn {
+// ---------------------------------------------
+// Corner buttons — back (top-left) and maximize
+// (top-right). Same treatment, mirrored position,
+// so they read as one matched pair.
+// ---------------------------------------------
+.presentation-back-btn,
+.presentation-maximize-btn {
   position: fixed;
   top: 14px;
-  left: 14px;
   z-index: 6;
   --border-radius: 999px;
   --padding-start: 10px;
   --padding-end: 10px;
-  --icon-size: 26px;
+  --icon-size: 22px;
+  width: 42px;
+  height: 42px;
+  margin: 0;
   color: var(--stage-text);
+
+  &::part(native) {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  }
+
+  &:hover::part(native) {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.24);
+  }
+
+  &:active::part(native) {
+    transform: scale(0.94);
+  }
+}
+
+.presentation-back-btn {
+  left: 14px;
+}
+
+.presentation-maximize-btn {
+  right: 14px;
 }
 
 // ---------------------------------------------
@@ -99,6 +133,10 @@ ion-content.presentation-content {
   color: var(--stage-text-soft);
 }
 
+// ---------------------------------------------
+// Font size control — pill / segmented style,
+// grouped into one visual unit.
+// ---------------------------------------------
 .font-controls-compact {
   position: absolute;
   right: 0;
@@ -108,18 +146,37 @@ ion-content.presentation-content {
   align-items: center;
   gap: 2px;
   z-index: 2;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--stage-rule);
+  border-radius: 999px;
+  padding: 3px;
 }
 
 .font-controls-compact .font-side-btn {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   --border-radius: 999px;
   --padding-start: 0;
   --padding-end: 0;
-  border: 1px solid var(--stage-rule);
-  background: rgba(255, 255, 255, 0.12);
+  margin: 0;
+  border: none;
+  background: transparent;
   color: var(--stage-text);
   font-size: 14px;
+  transition: background-color 0.15s ease, transform 0.12s ease;
+
+  &::part(native) {
+    background: transparent;
+    border-radius: 999px;
+  }
+
+  &:hover::part(native) {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
 }
 
 .font-controls-value {
@@ -127,7 +184,7 @@ ion-content.presentation-content {
   font-size: 0.8rem;
   color: var(--stage-text-soft);
   white-space: nowrap;
-  min-width: 1.4ch;
+  min-width: 2ch;
   text-align: center;
 }
 
@@ -204,9 +261,11 @@ ion-content.presentation-content {
 .slide-counter {
   font-family: var(--stage-font-display);
   font-size: 1rem;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.14);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  letter-spacing: 0.02em;
 }
 
 .presentation-footer {
@@ -221,7 +280,7 @@ ion-content.presentation-content {
   flex: 0 0 auto;
   position: sticky;
   bottom: 0;
-  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.04));
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.04));
 }
 
 .presentation-title {
@@ -244,17 +303,40 @@ ion-content.presentation-content {
   gap: 10px;
 }
 
+// ---------------------------------------------
+// Prev/next nav buttons — clearer depth, softer
+// resting state, snappy tap feedback.
+// ---------------------------------------------
 .nav-btn {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   --border-radius: 999px;
-  border: 1px solid var(--stage-rule);
-  background: rgba(255,255,255,0.12);
+  --padding-start: 0;
+  --padding-end: 0;
+  margin: 0;
   color: var(--stage-text);
+  transition: transform 0.12s ease;
+
+  &::part(native) {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--stage-rule);
+    border-radius: 999px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  &:hover:not([disabled])::part(native) {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:active:not([disabled]) {
+    transform: scale(0.94);
+  }
 }
 
 .nav-btn[disabled] {
-  opacity: 0.35;
+  opacity: 0.3;
 }
 
 // ---------------------------------------------
@@ -279,11 +361,15 @@ ion-content.presentation-content {
   padding: 6px 12px;
   min-width: 68px;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, transform 0.12s ease;
 
   &:hover:not(:disabled) {
     background: rgba(201, 138, 63, 0.16);
     border-color: var(--stage-accent);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
   }
 
   &:focus-visible {
@@ -305,9 +391,20 @@ ion-content.presentation-content {
 }
 
 @media (max-width: 768px) {
-  .presentation-back-btn {
+  .presentation-back-btn,
+  .presentation-maximize-btn {
     top: 10px;
+    width: 38px;
+    height: 38px;
+    --icon-size: 20px;
+  }
+
+  .presentation-back-btn {
     left: 10px;
+  }
+
+  .presentation-maximize-btn {
+    right: 10px;
   }
 
   .presentation-bar {
@@ -321,6 +418,11 @@ ion-content.presentation-content {
   .font-controls-compact .font-side-btn {
     width: 26px;
     height: 26px;
+  }
+
+  .nav-btn {
+    width: 42px;
+    height: 42px;
   }
 
   .presentation-main {
@@ -348,15 +450,13 @@ ion-content.presentation-content {
       font-size: clamp(32px, min(8vh, 12vw), 50px);
       max-width: 100%;
     }
-
-    
   }
 }
 
 // ---------------------------------------------
-// Slightly recede on-stage controls (not the back button)
-// so they don't visually compete with the lyrics, while
-// staying clearly legible.
+// Slightly recede on-stage controls (not the back/
+// maximize buttons) so they don't visually compete
+// with the lyrics, while staying clearly legible.
 // ---------------------------------------------
 .font-side-btn,
 .nav-btn {

@@ -14,6 +14,8 @@ import {
   arrowBack,
   removeOutline,
   addOutline,
+  expandOutline,
+  contractOutline,
 } from 'ionicons/icons';
 import { HymnStorageService } from '../../services/hymn-storage.service';
 import { Hymn, HymnSection, AppSettings } from '../../models/hymn.model';
@@ -32,6 +34,9 @@ export class PresentationPage implements OnInit, OnDestroy {
   touchStartX = 0;
   touchEndX = 0;
   fontSize = 3; // Scale 1-7
+
+  isFullscreen = false;
+  fullscreenSupported = !!document.fullscreenEnabled;
 
   private stateStorageKey = 'hymn-presenter-state';
   private currentHymnId: number | null = null;
@@ -65,6 +70,8 @@ export class PresentationPage implements OnInit, OnDestroy {
       arrowBack,
       removeOutline,
       addOutline,
+      expandOutline,
+      contractOutline,
     });
   }
 
@@ -257,9 +264,28 @@ export class PresentationPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Toggle controls visibility. Tapping the center of the stage (outside
-   * the left/right nav zones) calls this.
+   * Sync isFullscreen whenever the browser's fullscreen state changes
+   * (covers our button, the Esc key, and F11, etc.)
    */
+  @HostListener('document:fullscreenchange')
+  onFullscreenChange() {
+    this.isFullscreen = !!document.fullscreenElement;
+  }
+
+  /**
+   * Toggle browser fullscreen (hides address bar / tabs on desktop).
+   */
+  toggleFullscreen() {
+    const el = document.documentElement;
+
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen?.();
+    }
+  }
 
   /**
    * Increase font size

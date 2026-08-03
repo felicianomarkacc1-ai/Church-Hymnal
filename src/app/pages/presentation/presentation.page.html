@@ -15,6 +15,17 @@
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
 
+      <ion-button
+        *ngIf="fullscreenSupported"
+        fill="clear"
+        color="light"
+        class="presentation-maximize-btn"
+        (click)="toggleFullscreen()"
+        aria-label="Toggle fullscreen"
+      >
+        <ion-icon slot="icon-only" [name]="isFullscreen ? 'contract-outline' : 'expand-outline'"></ion-icon>
+      </ion-button>
+
       <header class="presentation-header">
         <div class="presentation-bar">
           <div class="presentation-title-wrap">
