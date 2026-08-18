@@ -3,19 +3,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
 
 :host {
-  --hymn-paper: var(--app-surface-bg, #faf6ec);
-  --hymn-paper-shade: var(--app-surface-alt-bg, #f1ead9);
-  --hymn-ink: var(--app-text, #2b241d);
-  --hymn-ink-soft: var(--app-text-muted, #6e6252);
-  --hymn-rule: var(--app-border, #ded1b8);
-  --hymn-maroon: #7c2e2e;
-  --hymn-maroon-shade: #631f1f;
-  --hymn-gold: #a9813e;
+  --hymn-paper: var(--app-surface-bg, #f9f5ff);
+  --hymn-paper-shade: var(--app-surface-alt-bg, #f0e7ff);
+  --hymn-ink: var(--app-text, #2d2541);
+  --hymn-ink-soft: var(--app-text-muted, #685b7d);
+  --hymn-rule: var(--app-border, #d7c9ee);
+  --hymn-maroon: var(--stage-accent, #cf6a6a);
+  --hymn-maroon-shade: var(--stage-accent-text, #f7d0d0);
+  --hymn-gold: var(--stage-accent, #cf6a6a);
 
   --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --hymn-font-body: 'Source Serif 4', Georgia, serif;
 
   display: block;
+}
+
+:host-context(body.dark) {
+  --hymn-maroon: var(--stage-accent, #cf6a6a);
+  --hymn-maroon-shade: var(--stage-accent-text, #f7d0d0);
+  --hymn-gold: var(--stage-accent, #cf6a6a);
 }
 
 .hymn-header ion-toolbar {

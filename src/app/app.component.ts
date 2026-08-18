@@ -25,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
     await this.hymnStorage.initialize();
     this.settingsSub = this.hymnStorage.settings$.subscribe((settings) => {
       this.applyTheme(settings.theme);
+      this.applyColorTheme(settings.colorTheme || 'purple');
     });
 
     // Dev helper: call `clearUserHymns()` from browser console to remove
@@ -47,5 +48,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private applyTheme(theme: 'dark' | 'light') {
     document.body.classList.toggle('dark', theme === 'dark');
     document.body.classList.toggle('light', theme === 'light');
+  }
+
+  private applyColorTheme(colorTheme: 'purple' | 'blue' | 'green' | 'rose') {
+    document.body.dataset['colorTheme'] = colorTheme;
   }
 }

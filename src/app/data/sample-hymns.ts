@@ -5334,7 +5334,7 @@ Paglilingkod kay Hesus
 Ako'y maligaya kay Haring Hesus
 Maligaya sa pagsunod
 Buhay ko't yama'y kusang ihahandog
-Maliya kay Hesus
+Maligaya kay Hesus
 
 [Verse 3]
 Ako'y maligaya kay Haring Hesus

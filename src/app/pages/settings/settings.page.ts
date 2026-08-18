@@ -16,7 +16,7 @@ import {
   IonRange,
 } from '@ionic/angular/standalone';
 import { HymnStorageService } from '../../services/hymn-storage.service';
-import { AppSettings } from '../../models/hymn.model';
+import { AppColorTheme, AppSettings } from '../../models/hymn.model';
 
 const FONT_SIZE_CLASS_MAP: { [key: number]: string } = {
   1: 'font-xs',
@@ -59,6 +59,7 @@ export class SettingsPage implements OnInit {
   settings: AppSettings = {
     id: 'app-settings',
     theme: 'dark',
+    colorTheme: 'purple',
     fontSize: 3,
     keepScreenAwake: false,
   };
@@ -78,6 +79,10 @@ export class SettingsPage implements OnInit {
 
   async updateTheme(theme: 'dark' | 'light') {
     await this.hymnStorage.updateSettings({ theme });
+  }
+
+  async updateColorTheme(colorTheme: AppColorTheme) {
+    await this.hymnStorage.updateSettings({ colorTheme });
   }
 
   async updateFontSize(fontSize: number) {

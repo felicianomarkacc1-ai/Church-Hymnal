@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap');
 
 /* Global Styles for Hymn Presenter */
 
@@ -9,19 +9,25 @@
   --app-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 
-  --app-bg: #f4f4f4;
-  --app-surface-bg: #fafafa;
-  --app-surface-alt-bg: #ffffff;
-  --app-text: #1a1a1a;
-  --app-text-muted: #666;
-  --app-border: #ddd;
-  --app-toolbar-bg: #ffffff;
-  --app-toolbar-text: #1a1a1a;
-  --app-input-bg: #ffffff;
-  --app-input-text: #1a1a1a;
-  --app-card-bg: #ffffff;
-  --app-scrollbar-thumb: #ccc;
-  --app-scrollbar-thumb-hover: #999;
+  --app-bg: #efe4f8;
+  --app-surface-bg: #f9f3ff;
+  --app-surface-alt-bg: #e6d7f4;
+  --app-text: #2a1d3d;
+  --app-text-muted: #5e4b76;
+  --app-border: #cdb5e9;
+  --app-toolbar-bg: #f9f3ff;
+  --app-toolbar-text: #2a1d3d;
+  --app-input-bg: #f9f3ff;
+  --app-input-text: #2a1d3d;
+  --app-card-bg: #f9f3ff;
+  --app-scrollbar-thumb: #a77cc8;
+  --app-scrollbar-thumb-hover: #734d9f;
+
+  --ion-color-primary: #603d87;
+  --ion-color-primary-rgb: 96, 61, 135;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #4d316f;
+  --ion-color-primary-tint: #f2ebff;
 
   --app-radius-sm: 6px;
   --app-radius-md: 10px;
@@ -36,37 +42,56 @@
   --app-transition-fast: 0.15s ease;
   --app-transition-base: 0.3s ease;
 
-  --hymn-paper: #fbf8f2;
-  --hymn-paper-shade: #f3ebdc;
-  --hymn-ink: #2b241d;
-  --hymn-ink-soft: #6e6252;
-  --hymn-rule: #d8ccb7;
-  --hymn-maroon: #7c2e2e;
-  --hymn-maroon-shade: #631f1f;
-  --hymn-gold: #a9813e;
+  --hymn-paper: #f9f5ff;
+  --hymn-paper-shade: #efe3ff;
+  --hymn-ink: #2d2140;
+  --hymn-ink-soft: #695783;
+  --hymn-rule: #d9c9f2;
+  --hymn-maroon: #64408d;
+  --hymn-maroon-shade: #4d316f;
+  --hymn-gold: #8c68b8;
   --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --hymn-font-body: 'Source Serif 4', Georgia, serif;
   --hymn-transition: 0.18s ease;
 
+  // ---------------------------------------------
+  // Type scale — Fraunces uses an optical-size axis:
+  // low opsz = warmer/text-friendly, high opsz = crisp/display.
+  // Pair each scale step with the right opsz via
+  // font-variation-settings where noted in components.
+  // ---------------------------------------------
+  --hymn-type-hymn-number: 700 clamp(2rem, 6vw, 3.4rem) / 1.1 var(--hymn-font-display);
+  --hymn-type-title: 600 clamp(1.4rem, 4vw, 2rem) / 1.3 var(--hymn-font-display);
+  --hymn-type-lyric: 400 clamp(1.1rem, 2.6vw, 1.5rem) / 1.9 var(--hymn-font-body);
+
   --ion-background-color: var(--app-bg);
-  --ion-background-color-rgb: 244, 244, 244;
+  --ion-background-color-rgb: 246, 241, 255;
   --ion-text-color: var(--app-text);
-  --ion-text-color-rgb: 26, 26, 26;
+  --ion-text-color-rgb: 47, 37, 64;
   --ion-border-color: var(--app-border);
   --ion-toolbar-background: var(--app-toolbar-bg);
   --ion-toolbar-color: var(--app-toolbar-text);
   --ion-item-background: var(--app-card-bg);
   --ion-card-background: var(--app-card-bg);
 
-  --stage-bg: #f7efe0;
-  --stage-bg-edge: #e3d5bc;
-  --stage-text: #2b241d;
-  --stage-text-soft: #6e6252;
-  --stage-accent: #a9813e;
-  --stage-rule: rgba(43, 36, 29, 0.12);
-  --stage-glow: rgba(169, 129, 62, 0.08);
-  --stage-surface: rgba(255, 255, 255, 0.42);
-  --stage-surface-alt: rgba(255, 255, 255, 0.24);
+  // ---------------------------------------------
+  // Stage tokens — what actually gets projected.
+  // Kept deliberately high-contrast: near-black-on-cream
+  // in light mode, near-white-on-near-black in dark mode.
+  // --stage-accent is for decorative/large use only;
+  // use --stage-accent-text wherever accent color is actual
+  // readable text (labels, small UI) to stay WCAG-safe.
+  // ---------------------------------------------
+  --stage-bg: #f0e3fb;
+  --stage-bg-edge: #d8c4ee;
+  --stage-text: #2a1d3d;
+  --stage-text-soft: #5e4b76;
+  --stage-accent: #976fc6;       // richer regal violet accent for projection
+  --stage-accent-text: #432a59;  // deep aubergine purple for labels and rails
+  --stage-rule: rgba(42, 29, 61, 0.12);
+  --stage-glow: rgba(96, 61, 135, 0.08);
+  --stage-surface: rgba(255, 255, 255, 0.72);
+  --stage-surface-alt: rgba(255, 255, 255, 0.42);
 
   // ---------------------------------------------
   // Press-effect tokens (used by the global interaction
@@ -80,21 +105,171 @@
 }
 
 body.light {
-  --app-bg: #f4f4f4;
-  --app-surface-bg: #fafafa;
-  --app-surface-alt-bg: #ffffff;
-  --app-text: #1a1a1a;
-  --app-text-muted: #666;
-  --app-border: #ddd;
-  --app-toolbar-bg: #ffffff;
-  --app-toolbar-text: #1a1a1a;
-  --app-input-bg: #ffffff;
-  --app-input-text: #1a1a1a;
-  --app-card-bg: #ffffff;
-  --app-scrollbar-thumb: #ccc;
-  --app-scrollbar-thumb-hover: #999;
+  --app-bg: #f0eaf9;
+  --app-surface-bg: #f8f3ff;
+  --app-surface-alt-bg: #e9def8;
+  --app-text: #2a213d;
+  --app-text-muted: #62557f;
+  --app-border: #d2c0ea;
+  --app-toolbar-bg: #f8f3ff;
+  --app-toolbar-text: #2a213d;
+  --app-input-bg: #f8f3ff;
+  --app-input-text: #2a213d;
+  --app-card-bg: #f8f3ff;
+  --app-scrollbar-thumb: #a98ccf;
+  --app-scrollbar-thumb-hover: #775ca6;
 
-  background: linear-gradient(135deg, #f4f4f4 0%, #f8efe0 100%);
+  --hymn-paper: #f8f1ff;
+  --hymn-paper-shade: #ebdfff;
+  --hymn-ink: #2a1d3d;
+  --hymn-ink-soft: #5f4d78;
+  --hymn-rule: #d4bced;
+  --hymn-maroon: #6b448f;
+  --hymn-maroon-shade: #542d74;
+  --hymn-gold: #926ec0;
+
+  background: linear-gradient(135deg, #f0eaf9 0%, #e9def8 100%);
+}
+
+body.light[data-color-theme='blue'] {
+  --app-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --app-bg: #edf5ff;
+  --app-surface-bg: #f7fbff;
+  --app-surface-alt-bg: #dfeeff;
+  --app-text: #17314d;
+  --app-text-muted: #4e6783;
+  --app-border: #bfd8f5;
+  --app-toolbar-bg: #f7fbff;
+  --app-toolbar-text: #17314d;
+  --app-input-bg: #f7fbff;
+  --app-input-text: #17314d;
+  --app-card-bg: #f7fbff;
+  --app-scrollbar-thumb: #8eafd8;
+  --app-scrollbar-thumb-hover: #577db0;
+
+  --ion-color-primary: #2c5d98;
+  --ion-color-primary-rgb: 44, 93, 152;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #224d84;
+  --ion-color-primary-tint: #dfeeff;
+
+  --hymn-paper: #f5faff;
+  --hymn-paper-shade: #e1f0ff;
+  --hymn-ink: #17314d;
+  --hymn-ink-soft: #4d6780;
+  --hymn-rule: #c5dcf9;
+  --hymn-maroon: #2c5d98;
+  --hymn-maroon-shade: #1f456f;
+  --hymn-gold: #6294d2;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: 'Source Serif 4', Georgia, serif;
+
+  --stage-bg: #edf5ff;
+  --stage-bg-edge: #d2e3ff;
+  --stage-text: #17314d;
+  --stage-text-soft: #4e6783;
+  --stage-accent: #6ea3d9;
+  --stage-accent-text: #17314d;
+  --stage-rule: rgba(23, 49, 77, 0.12);
+  --stage-glow: rgba(64, 117, 184, 0.1);
+  --stage-surface: rgba(255, 255, 255, 0.7);
+  --stage-surface-alt: rgba(255, 255, 255, 0.4);
+
+  background: linear-gradient(135deg, #edf5ff 0%, #dfeeff 100%);
+}
+
+body.light[data-color-theme='green'] {
+  --app-font: 'Georgia', 'Times New Roman', serif;
+  --app-bg: #edf9f0;
+  --app-surface-bg: #f6fcf8;
+  --app-surface-alt-bg: #e0f4e6;
+  --app-text: #183227;
+  --app-text-muted: #4d6d5d;
+  --app-border: #bddfc3;
+  --app-toolbar-bg: #f6fcf8;
+  --app-toolbar-text: #183227;
+  --app-input-bg: #f6fcf8;
+  --app-input-text: #183227;
+  --app-card-bg: #f6fcf8;
+  --app-scrollbar-thumb: #99c1a4;
+  --app-scrollbar-thumb-hover: #5a8d72;
+
+  --ion-color-primary: #3b785d;
+  --ion-color-primary-rgb: 59, 120, 93;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #2d624a;
+  --ion-color-primary-tint: #e0f4e6;
+
+  --hymn-paper: #f3fbf6;
+  --hymn-paper-shade: #dff7e8;
+  --hymn-ink: #183227;
+  --hymn-ink-soft: #496d5d;
+  --hymn-rule: #c2e1cd;
+  --hymn-maroon: #3b785d;
+  --hymn-maroon-shade: #2b5d49;
+  --hymn-gold: #71a98c;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: Georgia, 'Times New Roman', serif;
+
+  --stage-bg: #edf9f0;
+  --stage-bg-edge: #d2ebdb;
+  --stage-text: #183227;
+  --stage-text-soft: #496d5d;
+  --stage-accent: #6ca685;
+  --stage-accent-text: #183227;
+  --stage-rule: rgba(24, 50, 39, 0.12);
+  --stage-glow: rgba(59, 120, 93, 0.09);
+  --stage-surface: rgba(255, 255, 255, 0.72);
+  --stage-surface-alt: rgba(255, 255, 255, 0.4);
+
+  background: linear-gradient(135deg, #edf9f0 0%, #dff7e8 100%);
+}
+
+body.light[data-color-theme='rose'] {
+  --app-font: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+  --app-bg: #fdf0f6;
+  --app-surface-bg: #fff7fb;
+  --app-surface-alt-bg: #f8e0eb;
+  --app-text: #3a2438;
+  --app-text-muted: #6d5062;
+  --app-border: #efcbe0;
+  --app-toolbar-bg: #fff7fb;
+  --app-toolbar-text: #3a2438;
+  --app-input-bg: #fff7fb;
+  --app-input-text: #3a2438;
+  --app-card-bg: #fff7fb;
+  --app-scrollbar-thumb: #d7a0b9;
+  --app-scrollbar-thumb-hover: #b7698d;
+
+  --ion-color-primary: #a55e7c;
+  --ion-color-primary-rgb: 165, 94, 124;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #7f415d;
+  --ion-color-primary-tint: #f8e0eb;
+
+  --hymn-paper: #fff8fb;
+  --hymn-paper-shade: #fae4ef;
+  --hymn-ink: #3a2438;
+  --hymn-ink-soft: #6a4f5f;
+  --hymn-rule: #f0d1df;
+  --hymn-maroon: #a55e7c;
+  --hymn-maroon-shade: #7f415d;
+  --hymn-gold: #c7819c;
+  --hymn-font-display: 'Fraunces', Georgia, serif;
+  --hymn-font-body: 'Palatino Linotype', 'Book Antiqua', serif;
+
+  --stage-bg: #fdf0f6;
+  --stage-bg-edge: #f4d7e5;
+  --stage-text: #3a2438;
+  --stage-text-soft: #6d5062;
+  --stage-accent: #c8859f;
+  --stage-accent-text: #3a2438;
+  --stage-rule: rgba(58, 36, 56, 0.12);
+  --stage-glow: rgba(165, 94, 124, 0.08);
+  --stage-surface: rgba(255, 255, 255, 0.74);
+  --stage-surface-alt: rgba(255, 255, 255, 0.42);
+
+  background: linear-gradient(135deg, #fdf0f6 0%, #f8e0eb 100%);
 }
 
 body.dark {
@@ -117,17 +292,20 @@ body.dark {
   --hymn-ink: #f8f3e8;
   --hymn-ink-soft: #c2cbd6;
   --hymn-rule: #4f5b6d;
-  --hymn-maroon: #e2b0a8;
-  --hymn-maroon-shade: #c48172;
-  --hymn-gold: #f0c96b;
+  --hymn-maroon: #cf6a6a;
+  --hymn-maroon-shade: #b55a5a;
+  --hymn-gold: #d97a7a;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: 'Source Serif 4', Georgia, serif;
 
   --stage-bg: #0a0d12;
   --stage-bg-edge: #10151f;
   --stage-text: #f8f3e8;
   --stage-text-soft: #bbc3d4;
-  --stage-accent: #f0c96b;
+  --stage-accent: #cf6a6a;
+  --stage-accent-text: #f7d0d0;
   --stage-rule: rgba(248, 243, 232, 0.16);
-  --stage-glow: rgba(240, 201, 107, 0.1);
+  --stage-glow: rgba(207, 106, 106, 0.12);
   --stage-surface: rgba(248, 243, 232, 0.06);
   --stage-surface-alt: rgba(248, 243, 232, 0.1);
 
@@ -141,9 +319,334 @@ body.dark {
   --ion-item-background: #1c2332;
   --ion-card-background: #1c2332;
 
-  --press-ink: rgba(240, 201, 107, 0.14);
+  --press-ink: rgba(111, 163, 116, 0.14);
 
   background: linear-gradient(140deg, #0a0d12 0%, #151a24 55%, #0e131a 100%);
+}
+
+body.dark[data-color-theme='purple'] {
+  --app-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --app-bg: #0a0d12;
+  --app-surface-bg: #151a24;
+  --app-surface-alt-bg: #1d2430;
+  --app-text: #f8f3e8;
+  --app-text-muted: #b8c0cd;
+  --app-border: #4d5768;
+  --app-toolbar-bg: #11161f;
+  --app-toolbar-text: #f8f3e8;
+  --app-input-bg: #202736;
+  --app-input-text: #f8f3e8;
+  --app-card-bg: #1b2230;
+  --app-scrollbar-thumb: #5e6a7d;
+  --app-scrollbar-thumb-hover: #7c8aa0;
+
+  --ion-color-primary: #cf6a6a;
+  --ion-color-primary-rgb: 207, 106, 106;
+  --ion-color-primary-contrast: #fff0f0;
+  --ion-color-primary-shade: #b55a5a;
+  --ion-color-primary-tint: #f7d0d0;
+
+  --hymn-paper: #171c25;
+  --hymn-paper-shade: #232b39;
+  --hymn-ink: #f8f3e8;
+  --hymn-ink-soft: #c2cbd6;
+  --hymn-rule: #4f5b6d;
+  --hymn-maroon: #cf6a6a;
+  --hymn-maroon-shade: #b55a5a;
+  --hymn-gold: #d97a7a;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: 'Source Serif 4', Georgia, serif;
+
+  --stage-bg: #0a0d12;
+  --stage-bg-edge: #10151f;
+  --stage-text: #f8f3e8;
+  --stage-text-soft: #bbc3d4;
+  --stage-accent: #cf6a6a;
+  --stage-accent-text: #f7d0d0;
+  --stage-rule: rgba(248, 243, 232, 0.16);
+  --stage-glow: rgba(207, 106, 106, 0.12);
+  --stage-surface: rgba(248, 243, 232, 0.06);
+  --stage-surface-alt: rgba(248, 243, 232, 0.1);
+
+  --ion-background-color: #12161f;
+  --ion-background-color-rgb: 18, 22, 31;
+  --ion-text-color: #f8f3e8;
+  --ion-text-color-rgb: 248, 243, 232;
+  --ion-border-color: #4f5b6d;
+  --ion-toolbar-background: #161c28;
+  --ion-toolbar-color: #f8f3e8;
+  --ion-item-background: #1c2332;
+  --ion-card-background: #1c2332;
+
+  background: linear-gradient(140deg, #0a0d12 0%, #151a24 55%, #0e131a 100%);
+}
+
+body.dark[data-color-theme='blue'] {
+  --app-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --app-bg: #0a1523;
+  --app-surface-bg: #102235;
+  --app-surface-alt-bg: #17314d;
+  --app-text: #edf6ff;
+  --app-text-muted: #bfd8f6;
+  --app-border: #355d87;
+  --app-toolbar-bg: #0e1c2d;
+  --app-toolbar-text: #edf6ff;
+  --app-input-bg: #12263a;
+  --app-input-text: #edf6ff;
+  --app-card-bg: #12263a;
+  --app-scrollbar-thumb: #4977a8;
+  --app-scrollbar-thumb-hover: #6f9ad0;
+
+  --ion-color-primary: #89b9ea;
+  --ion-color-primary-rgb: 137, 185, 234;
+  --ion-color-primary-contrast: #0f1e32;
+  --ion-color-primary-shade: #5ca0d5;
+  --ion-color-primary-tint: #dfeeff;
+
+  --hymn-paper: #0f1e32;
+  --hymn-paper-shade: #17314d;
+  --hymn-ink: #edf6ff;
+  --hymn-ink-soft: #bfd8f6;
+  --hymn-rule: #345a86;
+  --hymn-maroon: #89b9ea;
+  --hymn-maroon-shade: #64a0d8;
+  --hymn-gold: #d5ebff;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: 'Source Serif 4', Georgia, serif;
+
+  --stage-bg: #0a1523;
+  --stage-bg-edge: #102235;
+  --stage-text: #edf6ff;
+  --stage-text-soft: #bfd8f6;
+  --stage-accent: #7aaee0;
+  --stage-accent-text: #edf6ff;
+  --stage-rule: rgba(237, 246, 255, 0.16);
+  --stage-glow: rgba(122, 174, 224, 0.12);
+  --stage-surface: rgba(237, 246, 255, 0.06);
+  --stage-surface-alt: rgba(237, 246, 255, 0.1);
+
+  --ion-background-color: #0d1b2c;
+  --ion-text-color: #edf6ff;
+  --ion-toolbar-color: #edf6ff;
+
+  background: linear-gradient(140deg, #0a1523 0%, #102235 55%, #0d1a2b 100%);
+}
+
+body.dark[data-color-theme='green'] {
+  --app-font: 'Georgia', 'Times New Roman', serif;
+  --app-bg: #0c1712;
+  --app-surface-bg: #12251d;
+  --app-surface-alt-bg: #18342b;
+  --app-text: #eefaf2;
+  --app-text-muted: #c6e1d0;
+  --app-border: #365e4b;
+  --app-toolbar-bg: #0e1f19;
+  --app-toolbar-text: #eefaf2;
+  --app-input-bg: #112d24;
+  --app-input-text: #eefaf2;
+  --app-card-bg: #122b23;
+  --app-scrollbar-thumb: #4d7a67;
+  --app-scrollbar-thumb-hover: #6ca083;
+
+  --ion-color-primary: #8cc9a9;
+  --ion-color-primary-rgb: 140, 201, 169;
+  --ion-color-primary-contrast: #0f1d18;
+  --ion-color-primary-shade: #70b78d;
+  --ion-color-primary-tint: #daf3e4;
+
+  --hymn-paper: #112a22;
+  --hymn-paper-shade: #16372d;
+  --hymn-ink: #eefaf2;
+  --hymn-ink-soft: #c6e1d0;
+  --hymn-rule: #345f4a;
+  --hymn-maroon: #8cc9a9;
+  --hymn-maroon-shade: #63af86;
+  --hymn-gold: #daf3e4;
+  --hymn-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --hymn-font-body: Georgia, 'Times New Roman', serif;
+
+  --stage-bg: #0c1712;
+  --stage-bg-edge: #12251d;
+  --stage-text: #eefaf2;
+  --stage-text-soft: #c6e1d0;
+  --stage-accent: #7bbd98;
+  --stage-accent-text: #eefaf2;
+  --stage-rule: rgba(238, 250, 242, 0.16);
+  --stage-glow: rgba(123, 189, 152, 0.12);
+  --stage-surface: rgba(238, 250, 242, 0.06);
+  --stage-surface-alt: rgba(238, 250, 242, 0.1);
+
+  --ion-background-color: #0d1d17;
+  --ion-text-color: #eefaf2;
+  --ion-toolbar-color: #eefaf2;
+
+  background: linear-gradient(140deg, #0c1712 0%, #12251d 55%, #0d1e17 100%);
+}
+
+body.dark[data-color-theme='rose'] {
+  --app-font: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+  --app-bg: #170d13;
+  --app-surface-bg: #22171d;
+  --app-surface-alt-bg: #31202a;
+  --app-text: #fff3f8;
+  --app-text-muted: #e1c7d3;
+  --app-border: #634a5f;
+  --app-toolbar-bg: #1d1219;
+  --app-toolbar-text: #fff3f8;
+  --app-input-bg: #2a2029;
+  --app-input-text: #fff3f8;
+  --app-card-bg: #261d23;
+  --app-scrollbar-thumb: #8c647b;
+  --app-scrollbar-thumb-hover: #b6859a;
+
+  --ion-color-primary: #d88fa8;
+  --ion-color-primary-rgb: 216, 143, 168;
+  --ion-color-primary-contrast: #170d13;
+  --ion-color-primary-shade: #bc758f;
+  --ion-color-primary-tint: #f4d7df;
+
+  --hymn-paper: #20171d;
+  --hymn-paper-shade: #2f1f2a;
+  --hymn-ink: #fff3f8;
+  --hymn-ink-soft: #e1c7d3;
+  --hymn-rule: #684c5d;
+  --hymn-maroon: #d88fa8;
+  --hymn-maroon-shade: #bc758f;
+  --hymn-gold: #f4d7df;
+  --hymn-font-display: 'Fraunces', Georgia, serif;
+  --hymn-font-body: 'Palatino Linotype', 'Book Antiqua', serif;
+
+  --stage-bg: #170d13;
+  --stage-bg-edge: #22171d;
+  --stage-text: #fff3f8;
+  --stage-text-soft: #e1c7d3;
+  --stage-accent: #d192a9;
+  --stage-accent-text: #fff3f8;
+  --stage-rule: rgba(255, 243, 248, 0.16);
+  --stage-glow: rgba(209, 146, 169, 0.12);
+  --stage-surface: rgba(255, 243, 248, 0.06);
+  --stage-surface-alt: rgba(255, 243, 248, 0.1);
+
+  --ion-background-color: #1b1017;
+  --ion-text-color: #fff3f8;
+  --ion-toolbar-color: #fff3f8;
+
+  background: linear-gradient(140deg, #170d13 0%, #22171d 55%, #140d12 100%);
+}
+
+body.dark[data-color-theme='blue'] {
+  --app-bg: #0a1420;
+  --app-surface-bg: #121d2d;
+  --app-surface-alt-bg: #1a2c3d;
+  --app-text: #ebf3ff;
+  --app-text-muted: #b8cbe7;
+  --app-border: #3d5874;
+  --app-toolbar-bg: #111d2d;
+  --app-toolbar-text: #ebf3ff;
+  --app-input-bg: #182838;
+  --app-input-text: #ebf3ff;
+  --app-card-bg: #162634;
+  --app-scrollbar-thumb: #496c90;
+  --app-scrollbar-thumb-hover: #6c8eb4;
+
+  --hymn-paper: #101d2d;
+  --hymn-paper-shade: #18293b;
+  --hymn-ink: #ebf3ff;
+  --hymn-ink-soft: #bdd1ec;
+  --hymn-rule: #33506f;
+  --hymn-maroon: #6aa6d9;
+  --hymn-maroon-shade: #4b81b6;
+  --hymn-gold: #9fc4ec;
+
+  --stage-bg: #091722;
+  --stage-bg-edge: #13253b;
+  --stage-text: #ebf3ff;
+  --stage-text-soft: #bdd1ec;
+  --stage-accent: #76a9dd;
+  --stage-accent-text: #dfefff;
+  --stage-rule: rgba(235, 243, 255, 0.14);
+  --stage-glow: rgba(118, 169, 221, 0.14);
+  --stage-surface: rgba(235, 243, 255, 0.06);
+  --stage-surface-alt: rgba(235, 243, 255, 0.1);
+
+  background: linear-gradient(140deg, #0a1420 0%, #101f2f 55%, #0b1725 100%);
+}
+
+body.dark[data-color-theme='green'] {
+  --app-bg: #0b1410;
+  --app-surface-bg: #132018;
+  --app-surface-alt-bg: #1b2d25;
+  --app-text: #edf9f1;
+  --app-text-muted: #c2d9cb;
+  --app-border: #3b5d4d;
+  --app-toolbar-bg: #101d16;
+  --app-toolbar-text: #edf9f1;
+  --app-input-bg: #15281d;
+  --app-input-text: #edf9f1;
+  --app-card-bg: #14271d;
+  --app-scrollbar-thumb: #4d7d65;
+  --app-scrollbar-thumb-hover: #6ea07f;
+
+  --hymn-paper: #0f1d18;
+  --hymn-paper-shade: #1a2d25;
+  --hymn-ink: #edf9f1;
+  --hymn-ink-soft: #bfd9c8;
+  --hymn-rule: #2f4d3f;
+  --hymn-maroon: #7ec4a1;
+  --hymn-maroon-shade: #5fa77f;
+  --hymn-gold: #b4ddc1;
+
+  --stage-bg: #0a1712;
+  --stage-bg-edge: #12231d;
+  --stage-text: #edf9f1;
+  --stage-text-soft: #c6d8cd;
+  --stage-accent: #7ec4a1;
+  --stage-accent-text: #e0f7eb;
+  --stage-rule: rgba(237, 249, 241, 0.14);
+  --stage-glow: rgba(126, 196, 161, 0.12);
+  --stage-surface: rgba(237, 249, 241, 0.06);
+  --stage-surface-alt: rgba(237, 249, 241, 0.1);
+
+  background: linear-gradient(140deg, #0b1410 0%, #112018 55%, #0d1713 100%);
+}
+
+body.dark[data-color-theme='rose'] {
+  --app-bg: #140d12;
+  --app-surface-bg: #1d141b;
+  --app-surface-alt-bg: #2a1d29;
+  --app-text: #fff1f7;
+  --app-text-muted: #d9c4d0;
+  --app-border: #60485b;
+  --app-toolbar-bg: #1a1219;
+  --app-toolbar-text: #fff1f7;
+  --app-input-bg: #251a22;
+  --app-input-text: #fff1f7;
+  --app-card-bg: #221821;
+  --app-scrollbar-thumb: #8a647d;
+  --app-scrollbar-thumb-hover: #af8197;
+
+  --hymn-paper: #20171d;
+  --hymn-paper-shade: #2d1f2b;
+  --hymn-ink: #fff1f7;
+  --hymn-ink-soft: #e0c5d0;
+  --hymn-rule: #684d5d;
+  --hymn-maroon: #d88ca5;
+  --hymn-maroon-shade: #b76a88;
+  --hymn-gold: #e5a9bc;
+
+  --stage-bg: #160d12;
+  --stage-bg-edge: #251a23;
+  --stage-text: #fff1f7;
+  --stage-text-soft: #e0c5d0;
+  --stage-accent: #d88ca5;
+  --stage-accent-text: #ffe5ef;
+  --stage-rule: rgba(255, 241, 247, 0.14);
+  --stage-glow: rgba(216, 140, 165, 0.12);
+  --stage-surface: rgba(255, 241, 247, 0.06);
+  --stage-surface-alt: rgba(255, 241, 247, 0.1);
+
+  background: linear-gradient(140deg, #140d12 0%, #1d141b 55%, #120d13 100%);
 }
 
 // Dark mode: respects system preference. Ionic's own dark-mode class
@@ -156,6 +659,18 @@ body.dark {
     --app-border: #333;
     --app-scrollbar-thumb: #444;
     --app-scrollbar-thumb-hover: #666;
+  }
+}
+
+// Extra-safe accent text for rooms with poor projector conditions
+// (ambient light, low-lumen projectors, older bulbs)
+@media (prefers-contrast: more) {
+  :root {
+    --stage-accent-text: #3a2450;
+  }
+
+  body.dark {
+    --stage-accent-text: #efe0f8;
   }
 }
 
@@ -176,6 +691,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   // Prevent iOS text-size auto-inflation on rotate
   -webkit-text-size-adjust: 100%;
+  // Oldstyle numerals read better for hymn numbers/dates in Fraunces
+  font-feature-settings: "onum" 1, "kern" 1;
 }
 
 body {

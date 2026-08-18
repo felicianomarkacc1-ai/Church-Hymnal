@@ -32,10 +32,13 @@ export interface HymnSection {
   text: string;
 }
 
+export type AppColorTheme = 'purple' | 'blue' | 'green' | 'rose';
+
 /** Settings for presentation mode and app */
 export interface AppSettings {
   id: string; // always 'app-settings'
   theme: 'dark' | 'light';
+  colorTheme: AppColorTheme;
   fontSize: number; // 1-5 scale
   keepScreenAwake: boolean;
   lastPresentedHymnId?: number;

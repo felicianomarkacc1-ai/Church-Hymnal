@@ -35,6 +35,25 @@
         </ion-select>
       </div>
 
+      <div class="setting-row">
+        <div class="setting-row-text">
+          <label for="colorSelect" class="setting-label">Color theme</label>
+          <span class="setting-desc">Choose the overall palette for light and dark presentation modes.</span>
+        </div>
+        <ion-select
+          id="colorSelect"
+          class="setting-select"
+          interface="popover"
+          [(ngModel)]="settings.colorTheme"
+          (ionChange)="updateColorTheme(settings.colorTheme)"
+        >
+          <ion-select-option value="purple">Purple</ion-select-option>
+          <ion-select-option value="blue">Blue</ion-select-option>
+          <ion-select-option value="green">Green</ion-select-option>
+          <ion-select-option value="rose">Rose</ion-select-option>
+        </ion-select>
+      </div>
+
       <div class="setting-row setting-row-stacked">
         <div class="setting-row-text">
           <span class="setting-label" id="fontSizeLabel">Default text size</span>
