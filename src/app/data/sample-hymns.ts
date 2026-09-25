@@ -5868,7 +5868,7 @@ Than when we've first begun.`,
   number: 205,
   title: 'PAG-IBIG N\'YA\'Y WALANG KAPANTAY (NO ONE EVER CARED FOR ME)',
   lyrics: `[Verse 1]
-Naiisip kong magsabi ng tungkol kay Kristo
+Nais kong magsabi ng tungkol kay Kristo
 Kaibigang walang kaatulad sa mundo
 Sasabihin kung pa'no ako'y binago
 Na di nagawa ng sinumang tao
