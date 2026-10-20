@@ -14,17 +14,112 @@ ion-content.presentation-content {
   flex-direction: column;
   align-items: center;
   padding: 0;
-  background: radial-gradient(circle at 50% 0%, var(--stage-glow) 0%, var(--stage-bg) 55%, var(--stage-bg-edge) 100%);
+  background: var(--stage-bg);
   color: var(--stage-text);
 }
 
 .presentation-shell {
+  position: relative;
+  isolation: isolate;
   width: 100%;
   height: 100vh;
   min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.presentation-landscape {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: clamp(128px, 18vh, 220px);
+  overflow: hidden;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+:host-context(body.dark) .presentation-landscape {
+  opacity: 0.62;
+}
+
+.landscape-sun {
+  position: absolute;
+  top: 12%;
+  left: 16%;
+  width: clamp(34px, 5vw, 68px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--scene-sun);
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--scene-sun) 28%, transparent);
+}
+
+.landscape-hill {
+  position: absolute;
+  right: -8%;
+  bottom: 22px;
+  left: -8%;
+  height: 72%;
+  border-radius: 50% 50% 0 0 / 65% 65% 0 0;
+}
+
+.landscape-hill-back {
+  right: 18%;
+  bottom: 34px;
+  left: 28%;
+  background: var(--scene-hill-back);
+  transform: rotate(-4deg);
+}
+
+.landscape-hill-front {
+  right: 20%;
+  left: -28%;
+  background: var(--scene-hill-front);
+  transform: rotate(4deg);
+}
+
+.landscape-water {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 26px;
+  background: repeating-linear-gradient(176deg, var(--scene-water) 0 3px, var(--scene-water-light) 3px 8px);
+  clip-path: polygon(0 12%, 18% 26%, 35% 8%, 53% 22%, 70% 6%, 87% 21%, 100% 10%, 100% 100%, 0 100%);
+}
+
+.landscape-note {
+  position: absolute;
+  z-index: 2;
+  color: var(--stage-accent);
+  font-family: var(--stage-font-display);
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  animation: stage-note-float 5s ease-in-out infinite;
+}
+
+.landscape-note-one {
+  top: 16%;
+  left: 40%;
+}
+
+.landscape-note-two {
+  top: 34%;
+  right: 25%;
+  font-size: clamp(1rem, 1.7vw, 1.5rem);
+  animation-delay: -2.3s;
+}
+
+@keyframes stage-note-float {
+  0%, 100% { transform: translateY(0) rotate(-7deg); }
+  50% { transform: translateY(-8px) rotate(7deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landscape-note {
+    animation: none;
+  }
 }
 
 // ---------------------------------------------
@@ -211,7 +306,7 @@ ion-content.presentation-content {
     font-family: var(--stage-font-display);
     font-weight: 500;
     line-height: 1.3;
-    white-space: normal;
+    white-space: pre-line;
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: min(1400px, 100%);
@@ -472,4 +567,32 @@ ion-content.presentation-content {
 
 .nav-btn[disabled] {
   opacity: 0.25; // stays dimmer than the enabled state above
+}
+
+.presentation-back-btn,
+.presentation-maximize-btn,
+.font-controls-compact,
+.slide-counter,
+.nav-btn,
+.quick-jump-chip {
+  border-radius: 8px;
+}
+
+.presentation-back-btn::part(native),
+.presentation-maximize-btn::part(native),
+.nav-btn::part(native) {
+  border-radius: 8px;
+}
+
+.font-controls-compact {
+  padding: 2px;
+}
+
+.slide-counter {
+  font-weight: 650;
+}
+
+.quick-jump-chip {
+  min-width: 72px;
+  padding: 7px 12px;
 }

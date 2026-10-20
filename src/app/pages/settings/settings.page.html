@@ -11,6 +11,7 @@
   <div class="manuscript">
 
     <div class="page-intro">
+      <span class="hero-motif" aria-hidden="true">✦</span>
       <p class="eyebrow">Presentation defaults</p>
       <h2>Settings</h2>
       <p class="lede">These apply whenever you open a hymn in presentation mode.</p>
@@ -21,7 +22,7 @@
       <div class="setting-row">
         <div class="setting-row-text">
           <label for="themeSelect" class="setting-label">Theme</label>
-          <span class="setting-desc">Background used while presenting.</span>
+          <span class="setting-desc">Choose light for a white projection wall or dark for a dim room.</span>
         </div>
         <ion-select
           id="themeSelect"
@@ -37,8 +38,8 @@
 
       <div class="setting-row">
         <div class="setting-row-text">
-          <label for="colorSelect" class="setting-label">Color theme</label>
-          <span class="setting-desc">Choose the overall palette for light and dark presentation modes.</span>
+          <label for="colorSelect" class="setting-label">Website style</label>
+          <span class="setting-desc">Choose a classic or seasonal style with its own colors, fonts, and page design.</span>
         </div>
         <ion-select
           id="colorSelect"
@@ -47,10 +48,15 @@
           [(ngModel)]="settings.colorTheme"
           (ionChange)="updateColorTheme(settings.colorTheme)"
         >
-          <ion-select-option value="purple">Purple</ion-select-option>
-          <ion-select-option value="blue">Blue</ion-select-option>
-          <ion-select-option value="green">Green</ion-select-option>
-          <ion-select-option value="rose">Rose</ion-select-option>
+          <ion-select-option value="original">Classic Hymnal</ion-select-option>
+          <ion-select-option value="purple">Contemporary</ion-select-option>
+          <ion-select-option value="blue">Blue Editorial</ion-select-option>
+          <ion-select-option value="green">Garden</ion-select-option>
+          <ion-select-option value="rose">Rose Heritage</ion-select-option>
+          <ion-select-option value="sunny">Sunny Day</ion-select-option>
+          <ion-select-option value="winter">Winter Frost</ion-select-option>
+          <ion-select-option value="rainy">Rainy Day</ion-select-option>
+          <ion-select-option value="autumn">Autumn Harvest</ion-select-option>
         </ion-select>
       </div>
 

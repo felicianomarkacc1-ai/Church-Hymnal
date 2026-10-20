@@ -24,7 +24,7 @@ export class HymnStorageService {
   private settingsSubject = new BehaviorSubject<AppSettings>({
     id: 'app-settings',
     theme: 'dark',
-    colorTheme: 'purple',
+    colorTheme: 'original',
     fontSize: 3,
     keepScreenAwake: false,
   });

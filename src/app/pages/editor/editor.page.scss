@@ -424,3 +424,136 @@
     min-width: 64px;
   }
 }
+
+.hymn-header ion-toolbar {
+  --background: var(--app-toolbar-bg);
+  --color: var(--app-toolbar-text);
+  --border-color: var(--app-border);
+}
+
+.hymn-editor-content {
+  --background: var(--app-bg);
+}
+
+.manuscript {
+  max-width: 760px;
+}
+
+.plate {
+  position: relative;
+  min-height: 180px;
+  margin-bottom: 22px;
+  padding: 24px;
+  border-color: var(--hymn-rule);
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--scene-sky-top) 0%, var(--scene-sky-bottom) 68%, var(--scene-ground) 68%, var(--scene-ground) 100%);
+  box-shadow: 0 8px 22px rgba(49, 66, 52, 0.08);
+}
+
+.plate::before {
+  position: absolute;
+  right: -4%;
+  bottom: 0;
+  left: 0;
+  height: 45%;
+  content: '';
+  background:
+    radial-gradient(ellipse at 76% 100%, var(--scene-hill-front) 0 31%, transparent 32%),
+    radial-gradient(ellipse at 42% 115%, var(--scene-hill-back) 0 38%, transparent 39%),
+    radial-gradient(circle at 12% 25%, var(--scene-sun) 0 28px, transparent 29px);
+  pointer-events: none;
+}
+
+.plate > * {
+  position: relative;
+  z-index: 1;
+}
+
+.plate .hero-motif {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  right: 24px;
+  color: var(--hymn-maroon);
+  font-size: 2rem;
+  opacity: 0.72;
+  animation: banner-float 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.plate-number {
+  border-color: var(--hymn-maroon);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--app-surface-bg) 86%, transparent);
+}
+
+.plate-number::after {
+  border-color: color-mix(in srgb, var(--hymn-maroon) 20%, transparent);
+}
+
+.plate-number-input {
+  color: var(--hymn-maroon);
+}
+
+.plate-title-input {
+  border-bottom-color: color-mix(in srgb, var(--hymn-ink) 24%, transparent);
+  color: var(--hymn-ink);
+}
+
+.plate-title-input:focus-visible {
+  border-bottom-color: var(--hymn-maroon);
+}
+
+.plate-caption,
+.plate-number-label {
+  color: var(--hymn-ink-soft);
+}
+
+.plate-divider {
+  background: var(--hymn-rule);
+}
+
+.plate-language select {
+  border-radius: 6px;
+}
+
+.lyrics-frame {
+  border-radius: 8px;
+  background: var(--app-surface-bg);
+  box-shadow: 0 3px 10px rgba(45, 60, 46, 0.04);
+}
+
+.section-badge {
+  border-color: color-mix(in srgb, var(--hymn-maroon) 24%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--hymn-maroon) 14%, var(--app-surface-bg));
+  color: var(--hymn-maroon);
+}
+
+.marginalia {
+  border-left-color: var(--hymn-gold);
+  border-radius: 0 6px 6px 0;
+}
+
+.save-btn {
+  --background: var(--hymn-maroon);
+  --background-hover: var(--hymn-maroon-shade);
+  --background-activated: var(--hymn-maroon-shade);
+  --border-radius: 6px;
+  --box-shadow: 0 5px 12px color-mix(in srgb, var(--hymn-maroon) 22%, transparent);
+}
+
+.cancel-btn {
+  --border-radius: 6px;
+}
+
+@keyframes banner-float {
+  0%, 100% { transform: translateY(0) rotate(-7deg); }
+  50% { transform: translateY(-8px) rotate(7deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-motif {
+    animation: none;
+  }
+}

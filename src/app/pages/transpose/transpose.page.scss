@@ -256,3 +256,137 @@
 .saved-delete {
   --color: var(--hymn-maroon);
 }
+
+.hymn-header ion-toolbar {
+  --background: var(--app-toolbar-bg);
+  --color: var(--app-toolbar-text);
+  --border-color: var(--app-border);
+}
+
+.transpose-content {
+  --background: var(--app-bg);
+}
+
+.transpose-shell {
+  max-width: 860px;
+  margin-top: 16px;
+}
+
+.page-eyebrow {
+  color: var(--hymn-ink-soft);
+}
+
+.transpose-hero {
+  position: relative;
+  min-height: 180px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 14px;
+  padding: 24px 30px;
+  border: 1px solid var(--hymn-rule);
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--scene-sky-top) 0%, var(--scene-sky-bottom) 68%, var(--scene-ground) 68%, var(--scene-ground) 100%);
+  box-shadow: 0 8px 22px rgba(49, 66, 52, 0.07);
+  text-align: left;
+}
+
+.transpose-hero::before {
+  position: absolute;
+  right: -4%;
+  bottom: 0;
+  left: 42%;
+  height: 43%;
+  content: '';
+  background:
+    radial-gradient(ellipse at 76% 100%, var(--scene-hill-front) 0 30%, transparent 31%),
+    radial-gradient(ellipse at 36% 115%, var(--scene-hill-back) 0 40%, transparent 41%),
+    radial-gradient(circle at 82% 8%, var(--scene-sun) 0 20px, transparent 21px);
+}
+
+.transpose-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.transpose-hero .hero-motif {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  right: 24px;
+  color: var(--hymn-maroon);
+  font-size: 2rem;
+  opacity: 0.76;
+  animation: banner-float 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.transpose-hero h2 {
+  max-width: 20ch;
+  color: var(--hymn-ink);
+}
+
+.transpose-hero p {
+  margin-left: 0;
+  color: var(--scene-copy-soft);
+}
+
+.transpose-panel {
+  border-color: var(--hymn-rule);
+  border-radius: 8px;
+  background: var(--app-surface-bg);
+  box-shadow: 0 5px 14px rgba(45, 60, 46, 0.05);
+}
+
+.transpose-title-input,
+.transpose-input {
+  border-radius: 6px;
+}
+
+.transpose-pill {
+  border-radius: 6px;
+  background: var(--app-surface-alt-bg);
+}
+
+.transpose-status {
+  color: var(--hymn-maroon);
+}
+
+.step-btn {
+  --border-radius: 6px;
+  --border-color: var(--hymn-rule);
+  --color: var(--hymn-maroon);
+}
+
+.save-btn {
+  --background: var(--hymn-maroon);
+  --background-hover: var(--hymn-maroon-shade);
+  --border-radius: 6px;
+}
+
+.transpose-result pre,
+.saved-entry,
+.saved-entry pre {
+  border-radius: 6px;
+}
+
+.saved-entry {
+  border-color: var(--hymn-rule);
+  background: var(--app-surface-bg);
+}
+
+.saved-entry pre {
+  background: var(--app-surface-alt-bg);
+}
+
+@keyframes banner-float {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-8px) rotate(6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-motif {
+    animation: none;
+  }
+}

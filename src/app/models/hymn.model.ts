@@ -32,7 +32,16 @@ export interface HymnSection {
   text: string;
 }
 
-export type AppColorTheme = 'purple' | 'blue' | 'green' | 'rose';
+export type AppColorTheme =
+  | 'original'
+  | 'purple'
+  | 'blue'
+  | 'green'
+  | 'rose'
+  | 'sunny'
+  | 'winter'
+  | 'rainy'
+  | 'autumn';
 
 /** Settings for presentation mode and app */
 export interface AppSettings {

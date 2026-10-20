@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { HymnStorageService } from './services/hymn-storage.service';
+import { AppColorTheme } from './models/hymn.model';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
     await this.hymnStorage.initialize();
     this.settingsSub = this.hymnStorage.settings$.subscribe((settings) => {
       this.applyTheme(settings.theme);
-      this.applyColorTheme(settings.colorTheme || 'purple');
+      this.applyColorTheme(settings.colorTheme || 'original');
     });
 
     // Dev helper: call `clearUserHymns()` from browser console to remove
@@ -50,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
     document.body.classList.toggle('light', theme === 'light');
   }
 
-  private applyColorTheme(colorTheme: 'purple' | 'blue' | 'green' | 'rose') {
+  private applyColorTheme(colorTheme: AppColorTheme) {
     document.body.dataset['colorTheme'] = colorTheme;
   }
 }
