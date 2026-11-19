@@ -11,8 +11,11 @@ const BUILT_IN_ID_BASE = 1_000_000;
   providedIn: 'root',
 })
 export class HymnStorageService {
-  /** Hardcoded hymns from data/sample-hymns.ts. Computed once, never persisted. */
+  /** Immutable source hymns from data/sample-hymns.ts. */
   private readonly builtInHymns: Hymn[] = this.buildBuiltInHymns();
+
+  /** Device-local edits to built-in hymns, stored separately from source data. */
+  private builtInOverrides = new Map<number, Hymn>();
 
   /** Only hymns the user has added/imported themselves, persisted to local storage. */
   private userHymnsSubject = new BehaviorSubject<Hymn[]>([]);
@@ -38,11 +41,17 @@ export class HymnStorageService {
   constructor(private storage: Storage) {
     // Whenever the user's stored hymns change, recombine with the built-ins.
     this.userHymnsSubject.subscribe((userHymns) => {
-      const combined = [...this.builtInHymns, ...userHymns].sort(
-        (a, b) => a.number - b.number
-      );
-      this.hymnsSubject.next(combined);
+      this.publishHymns(userHymns);
     });
+  }
+
+  private publishHymns(userHymns = this.userHymnsSubject.value): void {
+    const builtInHymns = this.builtInHymns.map(
+      (hymn) => this.builtInOverrides.get(hymn.id) ?? hymn
+    );
+    this.hymnsSubject.next(
+      [...builtInHymns, ...userHymns].sort((a, b) => a.number - b.number)
+    );
   }
 
   /**
@@ -109,6 +118,15 @@ export class HymnStorageService {
    */
   private async loadHymns(): Promise<void> {
     const stored: Hymn[] = (await this.storage.get('hymns')) || [];
+    const storedOverrides: Hymn[] =
+      (await this.storage.get('hymn-overrides')) || [];
+    const builtInIds = new Set(this.builtInHymns.map((hymn) => hymn.id));
+    this.builtInOverrides = new Map(
+      storedOverrides
+        .filter((hymn) => builtInIds.has(hymn.id) && hymn.isBuiltIn)
+        .map((hymn) => [hymn.id, hymn])
+    );
+
     const builtInNumbers = new Set(this.builtInHymns.map((h) => h.number));
     const userOnly = stored.filter((h) => !builtInNumbers.has(h.number));
     this.userHymnsSubject.next(userOnly);
@@ -227,8 +245,8 @@ export class HymnStorageService {
   }
 
   /**
-   * Update an existing user hymn. Throws if the target is a built-in hymn,
-   * or if the new number/language combo collides with a different hymn.
+   * Update a user hymn or save a device-local override for a built-in hymn.
+   * Throws if the new number/language combo collides with another hymn.
    */
   async updateHymn(
     id: number,
@@ -238,7 +256,30 @@ export class HymnStorageService {
     language: 'english' | 'tagalog' = 'english'
   ): Promise<Hymn | undefined> {
     if (id >= BUILT_IN_ID_BASE) {
-      throw new Error('Built-in hymns cannot be edited.');
+      const original = this.builtInHymns.find((hymn) => hymn.id === id);
+      if (!original) {
+        throw new Error('The selected built-in hymn could not be found.');
+      }
+
+      if (this.isNumberTakenInLanguage(number, language, id)) {
+        throw new Error(this.duplicateNumberMessage(number, language));
+      }
+
+      const updated: Hymn = {
+        ...(this.builtInOverrides.get(id) ?? original),
+        number,
+        title,
+        language,
+        sections: this.parseHymnText(lyricsText),
+        isBuiltIn: true,
+        updatedAt: Date.now(),
+      };
+      const overrides = new Map(this.builtInOverrides);
+      overrides.set(id, updated);
+      await this.storage.set('hymn-overrides', Array.from(overrides.values()));
+      this.builtInOverrides = overrides;
+      this.publishHymns();
+      return updated;
     }
 
     if (this.isNumberTakenInLanguage(number, language, id)) {
@@ -265,6 +306,26 @@ export class HymnStorageService {
     this.userHymnsSubject.next(updated);
 
     return userHymns[index];
+  }
+
+  isBuiltInCustomized(id: number): boolean {
+    return this.builtInOverrides.has(id);
+  }
+
+  async restoreBuiltInHymn(id: number): Promise<void> {
+    if (!this.builtInHymns.some((hymn) => hymn.id === id)) {
+      throw new Error('The selected built-in hymn could not be found.');
+    }
+
+    if (!this.builtInOverrides.has(id)) {
+      return;
+    }
+
+    const overrides = new Map(this.builtInOverrides);
+    overrides.delete(id);
+    await this.storage.set('hymn-overrides', Array.from(overrides.values()));
+    this.builtInOverrides = overrides;
+    this.publishHymns();
   }
 
   /**

@@ -102,6 +102,7 @@
             <span class="hymn-row-title">{{ hymn.title }}</span>
             <span class="hymn-row-meta">
               {{ hymn.sections.length }} section{{ hymn.sections.length === 1 ? '' : 's' }}
+              <span *ngIf="hymn.isBuiltIn && hasDeviceEdits(hymn.id)"> · Edited on this device</span>
             </span>
           </span>
         </button>
@@ -116,6 +117,17 @@
             <ion-icon slot="icon-only" name="pencil"></ion-icon>
           </ion-button>
           <ion-button
+            *ngIf="hymn.isBuiltIn && hasDeviceEdits(hymn.id)"
+            fill="outline"
+            size="small"
+            class="row-action restore"
+            (click)="restoreHymn(hymn)"
+            attr.aria-label="Restore original {{ hymn.title }}"
+          >
+            Restore
+          </ion-button>
+          <ion-button
+            *ngIf="!hymn.isBuiltIn"
             fill="clear"
             class="row-action delete"
             (click)="deleteHymn(hymn.id)"

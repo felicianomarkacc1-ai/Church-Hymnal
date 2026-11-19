@@ -371,6 +371,32 @@
   gap: 10px;
 }
 
+.device-edit-note {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--hymn-maroon) 28%, var(--hymn-rule));
+  border-left: 3px solid var(--hymn-maroon);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--hymn-maroon) 7%, var(--hymn-paper));
+  color: var(--hymn-ink-soft);
+  font-family: var(--hymn-font-body);
+  font-size: 0.88rem;
+  line-height: 1.5;
+
+  strong {
+    color: var(--hymn-ink);
+    font-family: var(--hymn-font-display);
+  }
+}
+
+.restore-btn {
+  --color: var(--hymn-maroon);
+  --border-color: var(--hymn-rule);
+}
+
 .save-btn {
   --background: var(--hymn-maroon);
   --background-hover: var(--hymn-maroon-shade);

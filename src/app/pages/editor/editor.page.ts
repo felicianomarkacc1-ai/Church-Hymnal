@@ -13,6 +13,7 @@ import {
   IonBackButton,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AlertController, ToastController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { chevronBack, checkmark } from 'ionicons/icons';
 import { HymnStorageService } from '../../services/hymn-storage.service';
@@ -44,11 +45,14 @@ export class EditorPage implements OnInit {
   hymnLanguage: 'english' | 'tagalog' = 'english';
   editingId: number | null = null;
   isNew = true;
+  isBuiltIn = false;
 
   constructor(
     private hymnStorage: HymnStorageService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {
     addIcons({ chevronBack, checkmark });
   }
@@ -62,6 +66,7 @@ export class EditorPage implements OnInit {
         this.isNew = false;
         const hymn = await this.hymnStorage.getHymnById(this.editingId);
         if (hymn) {
+          this.isBuiltIn = Boolean(hymn.isBuiltIn);
           this.hymnNumber = hymn.number.toString();
           this.hymnTitle = hymn.title;
           this.hymnLyrics = this.reconstructLyrics(hymn);
@@ -98,7 +103,7 @@ export class EditorPage implements OnInit {
 
   async saveHymn() {
     if (!this.hymnNumber || !this.hymnTitle || !this.hymnLyrics) {
-      alert('Please fill in all fields');
+      await this.showSaveConfirmation('Please fill in all fields');
       return;
     }
 
@@ -112,7 +117,7 @@ export class EditorPage implements OnInit {
           this.hymnLyrics,
           this.hymnLanguage
         );
-        alert('Hymn added!');
+        await this.showSaveConfirmation('Hymn saved on this device');
       } else {
         await this.hymnStorage.updateHymn(
           this.editingId!,
@@ -121,19 +126,72 @@ export class EditorPage implements OnInit {
           this.hymnLyrics,
           this.hymnLanguage
         );
-        alert('Hymn updated!');
+        await this.showSaveConfirmation(
+          this.isBuiltIn
+            ? 'Saved on this device only'
+            : 'Hymn changes saved'
+        );
       }
 
       this.router.navigate(['/library']);
-       } catch (error) {
+    } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Error saving hymn';
-      alert(message);
       console.error(error);
+      await this.showSaveConfirmation(message);
     }
   }
 
   cancel() {
     this.router.navigate(['/library']);
+  }
+
+  hasLocalChanges(): boolean {
+    return this.editingId !== null &&
+      this.hymnStorage.isBuiltInCustomized(this.editingId);
+  }
+
+  async restoreOriginal() {
+    if (this.editingId === null || !this.hasLocalChanges()) {
+      return;
+    }
+
+    const confirmation = await this.alertController.create({
+      header: 'Restore original hymn?',
+      message: 'This will discard the edits saved on this device.',
+      buttons: [
+        { text: 'Keep edits', role: 'cancel' },
+        { text: 'Restore', role: 'restore' },
+      ],
+      cssClass: 'hymn-action-alert',
+      animated: true,
+    });
+    await confirmation.present();
+    const { role } = await confirmation.onDidDismiss();
+    if (role !== 'restore') {
+      return;
+    }
+
+    try {
+      await this.hymnStorage.restoreBuiltInHymn(this.editingId);
+      await this.showSaveConfirmation('Original hymn restored');
+      this.router.navigate(['/library']);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Could not restore the hymn';
+      console.error(error);
+      await this.showSaveConfirmation(message);
+    }
+  }
+
+  private async showSaveConfirmation(message: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2200,
+      position: 'top',
+      cssClass: 'hymn-save-toast',
+      animated: true,
+    });
+    await toast.present();
   }
 }

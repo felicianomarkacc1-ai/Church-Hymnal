@@ -15,6 +15,11 @@
 <ion-content [fullscreen]="true" class="hymn-editor-content">
   <div class="manuscript">
 
+    <aside class="device-edit-note" *ngIf="isBuiltIn">
+      <strong>Device-only edit</strong>
+      <span>This change is saved in this browser on this device. It won’t change the published hymn for anyone else.</span>
+    </aside>
+
     <!-- Title plate: styled like the printed plate at the top of a hymnal page -->
     <div class="plate">
       <span class="hero-motif" aria-hidden="true">♪</span>
@@ -90,6 +95,15 @@
     <div class="actions">
       <ion-button expand="block" (click)="saveHymn()" class="save-btn ink-press">
         Save Hymn
+      </ion-button>
+      <ion-button
+        *ngIf="isBuiltIn && hasLocalChanges()"
+        expand="block"
+        fill="outline"
+        (click)="restoreOriginal()"
+        class="restore-btn"
+      >
+        Restore original hymn
       </ion-button>
       <ion-button expand="block" fill="clear" (click)="cancel()" class="cancel-btn">
         Cancel

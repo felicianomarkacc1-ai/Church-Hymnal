@@ -14,6 +14,7 @@ import {
   IonFabButton,
   IonButtons,
 } from '@ionic/angular/standalone';
+import { AlertController, ToastController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   add,
@@ -55,7 +56,9 @@ export class LibraryPage implements OnInit {
 
   constructor(
     private hymnStorage: HymnStorageService,
-    private router: Router
+    private router: Router,
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {
     addIcons({
       add,
@@ -124,13 +127,76 @@ export class LibraryPage implements OnInit {
   }
 
   async deleteHymn(id: number) {
-    if (confirm('Delete this hymn?')) {
-      await this.hymnStorage.deleteHymn(id);
+    const confirmation = await this.alertController.create({
+      header: 'Delete hymn?',
+      message: 'This will remove the hymn saved on this device.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Delete', role: 'delete' },
+      ],
+      cssClass: 'hymn-action-alert',
+      animated: true,
+    });
+    await confirmation.present();
+    const { role } = await confirmation.onDidDismiss();
+    if (role === 'delete') {
+      try {
+        await this.hymnStorage.deleteHymn(id);
+        await this.showLocalNotice('Hymn deleted');
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Could not delete the hymn';
+        console.error(error);
+        await this.showLocalNotice(message);
+      }
     }
   }
 
   editHymn(id: number) {
     this.router.navigate(['/editor', id]);
+  }
+
+  hasDeviceEdits(id: number): boolean {
+    return this.hymnStorage.isBuiltInCustomized(id);
+  }
+
+  async restoreHymn(hymn: Hymn) {
+    const confirmation = await this.alertController.create({
+      header: 'Restore original hymn?',
+      message: `Discard the edits to "${hymn.title}" saved on this device?`,
+      buttons: [
+        { text: 'Keep edits', role: 'cancel' },
+        { text: 'Restore', role: 'restore' },
+      ],
+      cssClass: 'hymn-action-alert',
+      animated: true,
+    });
+    await confirmation.present();
+    const { role } = await confirmation.onDidDismiss();
+    if (role !== 'restore') {
+      return;
+    }
+
+    try {
+      await this.hymnStorage.restoreBuiltInHymn(hymn.id);
+      await this.showLocalNotice('Original hymn restored');
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Could not restore the hymn';
+      console.error(error);
+      await this.showLocalNotice(message);
+    }
+  }
+
+  private async showLocalNotice(message: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2200,
+      position: 'top',
+      cssClass: 'hymn-save-toast',
+      animated: true,
+    });
+    await toast.present();
   }
 
   goToTranspose() {
@@ -180,19 +246,19 @@ export class LibraryPage implements OnInit {
         try {
           if (file.name.toLowerCase().endsWith('.json')) {
             await this.hymnStorage.importFromJSON(text);
-            alert('Hymns imported successfully!');
+            await this.showLocalNotice('Hymns imported successfully');
           } else if (file.name.toLowerCase().endsWith('.txt')) {
             const fileName = file.name.replace(/\.txt$/i, '').trim();
             const title = fileName || `Imported hymn ${this.getNextHymnNumber()}`;
             const number = this.getNextHymnNumber();
             await this.hymnStorage.addHymn(number, title, text, 'english');
-            alert(`Imported hymn "${title}" successfully.`);
+            await this.showLocalNotice(`Imported "${title}" successfully`);
           } else {
-            alert('Please select a .json or .txt file.');
+            await this.showLocalNotice('Please select a .json or .txt file');
           }
         } catch (error) {
           console.error(error);
-          alert('Failed to import hymns');
+          await this.showLocalNotice('Failed to import hymns');
         }
       }
     };
