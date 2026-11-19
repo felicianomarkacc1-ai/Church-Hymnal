@@ -15,7 +15,6 @@
       </div>
       <ion-button
         fill="clear"
-        color="light"
         class="presentation-back-btn"
         (click)="exitPresentation()"
         aria-label="Back to library"
@@ -26,7 +25,6 @@
       <ion-button
         *ngIf="fullscreenSupported"
         fill="clear"
-        color="light"
         class="presentation-maximize-btn"
         (click)="toggleFullscreen()"
         aria-label="Toggle fullscreen"
@@ -47,7 +45,6 @@
           <div class="font-controls-compact">
             <ion-button
               fill="clear"
-              color="light"
               class="font-side-btn"
               (click)="decreaseFontSize()"
               aria-label="Decrease text size"
@@ -57,7 +54,6 @@
             <span class="font-controls-value">{{ fontSize }}</span>
             <ion-button
               fill="clear"
-              color="light"
               class="font-side-btn"
               (click)="increaseFontSize()"
               aria-label="Increase text size"
@@ -78,7 +74,6 @@
         <div class="control-group">
           <ion-button
             fill="clear"
-            color="light"
             class="nav-btn"
             (click)="previousSection()"
             [disabled]="currentSectionIndex === 0"
@@ -89,7 +84,6 @@
           <span class="slide-counter">{{ currentSectionIndex + 1 }} / {{ hymn?.sections?.length ?? 0 }}</span>
           <ion-button
             fill="clear"
-            color="light"
             class="nav-btn"
             (click)="nextSection()"
             [disabled]="!hymn || currentSectionIndex >= hymn.sections.length - 1"
