@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { HymnStorageService } from './services/hymn-storage.service';
@@ -8,11 +7,10 @@ import { AppColorTheme } from './models/hymn.model';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [IonApp, IonRouterOutlet, RouterOutlet],
+  imports: [IonApp, IonRouterOutlet],
   template: `
     <ion-app>
       <ion-router-outlet></ion-router-outlet>
-      <router-outlet></router-outlet>
     </ion-app>
   `,
   styles: [],
